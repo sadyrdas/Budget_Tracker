@@ -1,7 +1,7 @@
 CREATE TYPE currency AS ENUM ('CZK', 'EUR', 'USA');
 CREATE TYPE transaction_type AS ENUM ('Income', 'Expense');
 
-CREATE TABLE User (
+CREATE TABLE client (
                       id SERIAL PRIMARY KEY,
                       email VARCHAR(255) UNIQUE NOT NULL,
                       password VARCHAR(255) NOT NULL,
@@ -10,10 +10,11 @@ CREATE TABLE User (
 
 CREATE TABLE Wallet (
                         id SERIAL PRIMARY KEY,
+                        name VARCHAR(255) NOT NULL,
                         amount NUMERIC(19, 2) NOT NULL,
                         currency currency NOT NULL,
                         user_id INTEGER NOT NULL,
-                        FOREIGN KEY (user_id) REFERENCES User (id)
+                        FOREIGN KEY (user_id) REFERENCES client (id)
 );
 
 CREATE TABLE Category (
@@ -23,7 +24,7 @@ CREATE TABLE Category (
                           FOREIGN KEY (parent_id) REFERENCES Category (id)
 );
 
-CREATE TABLE Transaction (
+CREATE TABLE Transactions (
                              id SERIAL PRIMARY KEY,
                              money NUMERIC(19, 2) NOT NULL,
                              type transaction_type NOT NULL,
