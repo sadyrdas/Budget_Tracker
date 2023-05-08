@@ -16,7 +16,6 @@ public class Transaction extends AbstractEntity {
 
     private BigDecimal money;
 
-    private TypeTransaction typeTransaction;
 
     public Transaction(Category category, Wallet walletId, BigDecimal money) {
         this.category = category;
