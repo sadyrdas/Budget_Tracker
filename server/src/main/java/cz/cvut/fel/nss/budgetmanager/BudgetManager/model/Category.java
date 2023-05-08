@@ -2,11 +2,13 @@ package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import java.util.Set;
 
 
 @Entity
+@Table(name = "category")
 public class Category extends AbstractEntity {
     private String name;
 

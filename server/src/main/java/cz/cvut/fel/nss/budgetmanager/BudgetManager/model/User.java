@@ -1,8 +1,13 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
-import jakarta.persistence.Entity;
+
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "client")
+@NamedQueries({
+        @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username")
+})
 public class User extends AbstractEntity {
     private String email;
     private String password;
