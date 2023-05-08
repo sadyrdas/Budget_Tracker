@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "transactions")
 public class Transaction extends AbstractEntity {
 
 
