@@ -9,8 +9,16 @@ import jakarta.persistence.*;
         @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username")
 })
 public class User extends AbstractEntity {
+    @Basic(optional = false)
+    @Column(nullable = false)
     private String email;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
     private String password;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
     private String username;
 
 

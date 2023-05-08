@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 public class Message extends AbstractEntity {
+
     private String info;
     private LocalDateTime dateTime;
 

@@ -1,8 +1,6 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Set;
 
@@ -10,10 +8,13 @@ import java.util.Set;
 @Entity
 @Table(name = "category")
 public class Category extends AbstractEntity {
+    @Basic(optional = false)
+    @Column(nullable = false)
     private String name;
 
     @OneToMany
     private Set<SubCategory> subCategory;
+
 
     public Category(String name) {
         this.name = name;
