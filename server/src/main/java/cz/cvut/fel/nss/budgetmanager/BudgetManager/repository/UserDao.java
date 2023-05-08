@@ -1,6 +1,7 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.repository;
 
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
+import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,8 +17,13 @@ public class UserDao extends BaseDao<User>{
     }
 
     public User findByUsername(String username){
-        return null;
-        //TODO
+        try {
+            return em.createNamedQuery("User.findByUsername", User.class).setParameter("username", username )
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
+
 
 }
