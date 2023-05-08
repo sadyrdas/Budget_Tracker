@@ -4,6 +4,7 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class UserDao extends BaseDao<User>{
@@ -16,14 +17,28 @@ public class UserDao extends BaseDao<User>{
         super(type);
     }
 
-    public User findByUsername(String username){
+    @Transactional
+    public User findByEmail(String email){
         try {
-            return em.createNamedQuery("User.findByUsername", User.class).setParameter("username", username )
+            return em.createNamedQuery("User.findByEmail", User.class).setParameter("email", email )
                     .getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
     }
+    @Transactional
+    public Boolean deleteUserByEmail(String email) {
+        try {
+            int rowUpdated =  em.createNamedQuery("User.deleteByEmail", User.class)
+                    .setParameter("email", email).executeUpdate();
+
+            return rowUpdated != 0;
+        } catch (NoResultException e) {
+            return null;
+        }
+
+    }
+
 
 
 }

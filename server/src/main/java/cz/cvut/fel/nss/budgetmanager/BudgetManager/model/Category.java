@@ -1,14 +1,16 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Set;
 
 
 @Entity
 @Table(name = "category")
+@NamedQueries({
+        @NamedQuery(name = "findCategoryByName", query = "SELECT c FROM Category c WHERE c.name = :name "),
+        @NamedQuery(name = "updateCategoryByName", query = "UPDATE Category set name = name where Category.name= :name")
+})
 public class Category extends AbstractEntity {
     private String name;
 
