@@ -11,7 +11,6 @@ public class UserDao extends BaseDao<User>{
      *
      * @param type the class type of the entity managed by this BaseDao.
      */
-    @Autowired
     public UserDao(Class<User> type) {
         super(type);
     }
