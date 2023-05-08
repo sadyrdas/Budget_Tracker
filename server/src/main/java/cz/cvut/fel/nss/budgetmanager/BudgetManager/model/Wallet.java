@@ -11,6 +11,8 @@ public class Wallet extends AbstractEntity{
     @Transient
     public static Wallet instance;
 
+    @Basic(optional = false)
+    @Column(nullable = false)
     private BigDecimal amount;
 
     @OneToOne
@@ -59,4 +61,5 @@ public class Wallet extends AbstractEntity{
     public void setCurrency(Currency currency) {
         this.currency = currency;
     }
+
 }

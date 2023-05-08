@@ -15,6 +15,9 @@ public class Transaction extends AbstractEntity {
     @ManyToOne
     private Wallet walletId;
 
+
+    @Basic(optional = false)
+    @Column(nullable = false)
     private BigDecimal money;
 
     private TypeTransaction typeTransaction;
