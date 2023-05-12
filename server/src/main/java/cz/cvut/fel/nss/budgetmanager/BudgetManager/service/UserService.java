@@ -55,24 +55,5 @@ public class UserService {
     }
 
 
-    @Transactional
-    public User findUserByEmail(String userEmail) {
-        return userDao.findByEmail(userEmail);
-    }
-    @Transactional
-    public Boolean deleteUserByEmail(String email) {
-        Objects.requireNonNull(email);
-
-        Boolean result = false;
-        if(email.isEmpty()) {
-            return result;
-        }else if (userDao.findByEmail(email) == null){
-            return result;
-        }else {
-            userDao.deleteUserByEmail(email);
-        }
-        return true;
-    }
-
 
 }

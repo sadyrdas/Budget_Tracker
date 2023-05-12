@@ -11,6 +11,12 @@ import java.math.BigDecimal;
 })
 public class Transaction extends AbstractEntity {
 
+    @Id
+    private Long transID;
+
+    /**
+     * KDE DATY U TRANZAKCII?
+     */
 
     @ManyToOne
     private Category category;
@@ -18,9 +24,9 @@ public class Transaction extends AbstractEntity {
     @ManyToOne
     private Wallet walletId;
 
-    @Basic(optional = false)
-    @Column(nullable = false)
-    private BigDecimal money;
+    @ManyToOne
+    private Wallet wallet;
+    //Check if relation is good!
 
     @Basic(optional = false)
     @Column(nullable = false)
@@ -28,13 +34,19 @@ public class Transaction extends AbstractEntity {
 
 
 
+    @Basic(optional = false)
+    @Column(nullable = false)
+    private BigDecimal money;
+
+    @Enumerated(EnumType.STRING)
     private TypeTransaction typeTransaction;
 
-    public Transaction(Category category, Wallet walletId, BigDecimal money, String name) {
+    public Transaction(Category category, Wallet wallet, String name, BigDecimal money, TypeTransaction typeTransaction) {
         this.category = category;
-        this.walletId = walletId;
-        this.money = money;
+        this.wallet = wallet;
         this.name = name;
+        this.money = money;
+        this.typeTransaction = typeTransaction;
     }
 
     public Transaction() {
@@ -49,12 +61,12 @@ public class Transaction extends AbstractEntity {
         this.category = category;
     }
 
-    public Wallet getWalletId() {
-        return walletId;
+    public Wallet getWallet() {
+        return wallet;
     }
 
-    public void setWalletId(Wallet walletId) {
-        this.walletId = walletId;
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 
     public BigDecimal getMoney() {
@@ -71,5 +83,17 @@ public class Transaction extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setTypeTransaction(TypeTransaction type){
+        this.typeTransaction = type;
+    }
+
+    public TypeTransaction getTypeTransaction() {
+        return typeTransaction;
+    }
+
+    public Long getTransID() {
+        return transID;
     }
 }
