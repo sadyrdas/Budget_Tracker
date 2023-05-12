@@ -17,6 +17,7 @@ public class Wallet extends AbstractEntity{
     @JoinColumn()
     private User userId;
 
+    @Enumerated(EnumType.STRING)
     private Currency currency;
 
 

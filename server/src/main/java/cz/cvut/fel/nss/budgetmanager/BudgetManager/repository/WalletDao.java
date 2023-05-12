@@ -1,8 +1,11 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.repository;
 
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class WalletDao extends BaseDao<Wallet>{
@@ -13,5 +16,11 @@ public class WalletDao extends BaseDao<Wallet>{
      */
     public WalletDao(Class<Wallet> type) {
         super(type);
+    }
+
+    public Wallet findSingletonWallet() {
+        TypedQuery<Wallet> query = em.createQuery("SELECT w FROM Wallet w", Wallet.class);
+        List<Wallet> wallets = query.getResultList();
+        return wallets.isEmpty() ? null : wallets.get(0);
     }
 }

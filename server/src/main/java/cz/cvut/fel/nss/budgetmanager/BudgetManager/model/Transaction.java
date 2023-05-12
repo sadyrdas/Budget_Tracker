@@ -11,12 +11,21 @@ import java.math.BigDecimal;
 })
 public class Transaction extends AbstractEntity {
 
+    @Id
+    private Long transID;
+
+    /**
+     * KDE DATY U TRANZAKCII?
+     */
 
     @ManyToOne
     private Category category;
 
-    @ManyToOne
-    private Wallet walletId;
+//    @ManyToOne
+//    private Wallet walletId;
+
+    @OneToOne
+    private Wallet wallet;
 
 
     @Basic(optional = false)
@@ -27,16 +36,17 @@ public class Transaction extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false)
-
     private BigDecimal money;
 
+    @Enumerated(EnumType.STRING)
     private TypeTransaction typeTransaction;
 
-    public Transaction(Category category, Wallet walletId, String name, BigDecimal money) {
+    public Transaction(Category category, Wallet wallet, String name, BigDecimal money, TypeTransaction typeTransaction) {
         this.category = category;
-        this.walletId = walletId;
+        this.wallet = wallet;
         this.name = name;
         this.money = money;
+        this.typeTransaction = typeTransaction;
     }
 
     public Transaction() {
@@ -51,12 +61,12 @@ public class Transaction extends AbstractEntity {
         this.category = category;
     }
 
-    public Wallet getWalletId() {
-        return walletId;
+    public Wallet getWallet() {
+        return wallet;
     }
 
-    public void setWalletId(Wallet walletId) {
-        this.walletId = walletId;
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 
     public BigDecimal getMoney() {
@@ -73,5 +83,17 @@ public class Transaction extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setTypeTransaction(TypeTransaction type){
+        this.typeTransaction = type;
+    }
+
+    public TypeTransaction getTypeTransaction() {
+        return typeTransaction;
+    }
+
+    public Long getTransID() {
+        return transID;
     }
 }
