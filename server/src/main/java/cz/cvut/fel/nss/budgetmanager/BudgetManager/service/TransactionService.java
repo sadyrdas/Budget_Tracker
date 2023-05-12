@@ -95,4 +95,32 @@ public class TransactionService {
         transactionDao.update(existingTransaction);
     }
 
+
+    //ReadOnly???
+    @Transactional
+    public BigDecimal calculateTotalExpenses(Wallet wallet) {
+        List<Transaction> transactions = wallet.getTransactions();
+        BigDecimal totalExpenses = BigDecimal.ZERO;
+
+        for (Transaction transaction : transactions) {
+            if (transaction.getTypeTransaction() == TypeTransaction.EXPANSE) {
+                totalExpenses = totalExpenses.add(transaction.getMoney());
+            }
+        }
+        return totalExpenses;
+    }
+
+    @Transactional
+    public BigDecimal calculateTotalIncome(Wallet wallet) {
+        BigDecimal totalIncome = BigDecimal.ZERO;
+
+        // Iterate through the transactions in the wallet and calculate the total income
+        for (Transaction transaction : wallet.getTransactions()) {
+            if (transaction.getTypeTransaction() == TypeTransaction.INCOME) {
+                totalIncome = totalIncome.add(transaction.getMoney());
+            }
+        }
+
+        return totalIncome;
+    }
 }

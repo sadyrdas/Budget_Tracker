@@ -21,12 +21,12 @@ public class Transaction extends AbstractEntity {
     @ManyToOne
     private Category category;
 
-//    @ManyToOne
-//    private Wallet walletId;
+    @ManyToOne
+    private Wallet walletId;
 
-    @OneToOne
+    @ManyToOne
     private Wallet wallet;
-
+    //Check if relation is good!
 
     @Basic(optional = false)
     @Column(nullable = false)
