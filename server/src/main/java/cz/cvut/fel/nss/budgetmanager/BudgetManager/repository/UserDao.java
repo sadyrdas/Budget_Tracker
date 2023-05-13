@@ -26,20 +26,4 @@ public class UserDao extends BaseDao<User>{
             return null;
         }
     }
-    @Transactional
-    public Boolean deleteUserByEmail(String email) {
-        try {
-            int rowUpdated =  em.createNamedQuery("User.deleteByEmail", User.class)
-                    .setParameter("email", email).executeUpdate();
-
-            return rowUpdated != 0;
-        } catch (NoResultException e) {
-            return null;
-        }
-
-    }
-
-
-
-
 }

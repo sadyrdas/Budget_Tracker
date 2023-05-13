@@ -2,8 +2,6 @@ package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
-
 
 @Entity
 @Table(name = "category")
@@ -11,19 +9,22 @@ import java.util.Set;
         @NamedQuery(name = "findCategoryByName", query = "SELECT c FROM Category c WHERE c.name = :name "),
         @NamedQuery(name = "updateCategoryByName", query = "UPDATE Category set name = name where Category.name= :name")
 })
-public class Category extends AbstractEntity {
+public class Category{
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "category_id")
+    private Long categoryId;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
     private String name;
 
-    @OneToMany
-    private Set<SubCategory> subCategory;
-
-    public Category(String name) {
-        this.name = name;
-
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public Category() {
-
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getName() {
@@ -32,14 +33,5 @@ public class Category extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    public Set<SubCategory> getSubCategory() {
-        return subCategory;
-    }
-
-    public void setSubCategory(Set<SubCategory> subCategory) {
-        this.subCategory = subCategory;
     }
 }

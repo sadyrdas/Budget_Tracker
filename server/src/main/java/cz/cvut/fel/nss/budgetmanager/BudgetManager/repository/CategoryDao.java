@@ -23,4 +23,10 @@ public class CategoryDao extends BaseDao<Category> {
         List<Category> categories = query.getResultList();
         return categories.isEmpty() ? null : categories.get(0);
     }
+
+    public Category updateCategoryByName(String name) {
+        TypedQuery<Category> query = em.createNamedQuery("updateCategoryByName", Category.class);
+        query.setParameter("name", name);
+        return query.getSingleResult();
+    }
 }

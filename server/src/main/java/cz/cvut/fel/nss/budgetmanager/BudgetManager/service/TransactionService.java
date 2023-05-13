@@ -8,7 +8,7 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.TypeTransaction;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionDao;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.WalletDao;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,12 +45,12 @@ public class TransactionService {
     }
 
     @Transactional
-    public List<Transaction>  findTransactionsByAmount(BigDecimal amount){
-        return transactionDao.findByAmount(amount);
+    public List<Transaction>  findTransactionsByAmount(BigDecimal money){
+        return transactionDao.findByAmount(money);
     }
 
-    @Transactional List<Transaction> findTransactionsByMessage(String message){
-        return transactionDao.findByMessage(message);
+    @Transactional List<Transaction> findTransactionsByMessage(String description){
+        return transactionDao.findByDescription(description);
     }
 
     @Transactional
@@ -75,42 +75,43 @@ public class TransactionService {
         if (transaction.getMoney().compareTo(BigDecimal.ZERO) >= 0) {
             transaction.setTypeTransaction(TypeTransaction.INCOME);
         } else {
-            transaction.setTypeTransaction(TypeTransaction.EXPANSE);
+            transaction.setTypeTransaction(TypeTransaction.EXPENSE);
         }
         transactionDao.update(transaction);
     }
 
     @Transactional
     public void editTransaction(Transaction transaction) {
-        Transaction existingTransaction = transactionDao.find(transaction.getTransID());
+        Transaction existingTransaction = transactionDao.find(transaction.getTransId());
         if (existingTransaction == null) {
             throw new NotFoundException("Transaction not found");
         }
 
-        existingTransaction.setName(transaction.getName());
+        existingTransaction.setDescription(transaction.getDescription());
         existingTransaction.setCategory(transaction.getCategory());
         existingTransaction.setMoney(transaction.getMoney());
+        existingTransaction.setTypeTransaction(transaction.getTypeTransaction());
+        existingTransaction.setDate(transaction.getDate());
         // Update other relevant fields as needed!!!
 
         transactionDao.update(existingTransaction);
+//        performTransaction(existingTransaction); //проверка на перерасчет после изменения транзакции
     }
 
-
-    //ReadOnly???
-    @Transactional
+    @Transactional(readOnly = true)
     public BigDecimal calculateTotalExpenses(Wallet wallet) {
         List<Transaction> transactions = wallet.getTransactions();
         BigDecimal totalExpenses = BigDecimal.ZERO;
 
         for (Transaction transaction : transactions) {
-            if (transaction.getTypeTransaction() == TypeTransaction.EXPANSE) {
+            if (transaction.getTypeTransaction() == TypeTransaction.EXPENSE) {
                 totalExpenses = totalExpenses.add(transaction.getMoney());
             }
         }
         return totalExpenses;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public BigDecimal calculateTotalIncome(Wallet wallet) {
         BigDecimal totalIncome = BigDecimal.ZERO;
 

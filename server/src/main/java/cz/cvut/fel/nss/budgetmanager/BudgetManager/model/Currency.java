@@ -1,7 +1,7 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
 public enum Currency {
-    EURO,
+    EUR,
     CZK,
-    DOLLAR
+    USD
 }

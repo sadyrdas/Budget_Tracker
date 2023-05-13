@@ -5,7 +5,7 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.TypeTransaction;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionDao;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.WalletDao;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +19,11 @@ import java.util.Objects;
 @Transactional
 public class WalletService {
 
-    @Autowired
     private TransactionService transactionService;
-
-//    @Autowired
     private NotificationService notificationService;
 
     private final WalletDao walletDao;
     private final TransactionDao transactionDao;
-    private BigDecimal budgetLimit;
-    private BigDecimal savingsGoal;
     private Wallet wallet;
 
     @Autowired
@@ -74,15 +69,8 @@ public class WalletService {
         return BigDecimal.ZERO;
     }
 
-
-    @Transactional
     public Wallet getWalletById(Long walletId) {
         return walletDao.find(walletId);
-    }
-
-    public void deleteWallet(Wallet wallet) {
-        Objects.requireNonNull(wallet);
-        walletDao.remove(wallet);
     }
 
     public BigDecimal calculateTotalIncome(Wallet wallet) {
@@ -97,16 +85,15 @@ public class WalletService {
         return totalIncome;
     }
 
-//    public List<Transaction> getTransactions(Long walletId) {
-//        Wallet wallet = getWalletById(walletId);
-//        return wallet.getTransactions();
-//    }
+    public List<Transaction> getTransactions(Long walletId) {
+        Wallet wallet = getWalletById(walletId);
+        return wallet.getTransactions();
+    }
 
     public List<Transaction> getTransactions() {
         Wallet wallet = getSingletonWallet();
         return wallet.getTransactions();
     }
-
 
     public Map<String, BigDecimal> calculateBudgetProgress(Long walletId) {
         Wallet wallet = getWalletById(walletId);

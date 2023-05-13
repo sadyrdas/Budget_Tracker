@@ -1,58 +1,48 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
 import jakarta.persistence.*;
-import org.springframework.data.relational.core.sql.In;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "wallet")
-public class Wallet extends AbstractEntity{
-
-
+public class Wallet{
     @Id
-    private Integer id; // ????
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "wallet_id")
+    private Long walletId;
 
-    @Transient
-    public static Wallet instance;
-
+    @Basic(optional = false)
+    @Column(nullable = false)
     private BigDecimal amount;
-
-    @OneToMany(mappedBy = "wallet")
-    private List<Transaction> transactions;
-
-    @OneToOne
-    @JoinColumn()
-    private User userId;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
+    @Basic(optional = false)
     private BigDecimal budgetLimit;
-    private BigDecimal savingsGoal;
 
-    public Wallet(BigDecimal amount, User userId) {
-        this.amount = amount;
-        this.userId = userId;
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="client")
+    private User client;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
+    private String name;
+
+
+    @OneToMany(mappedBy = "wallet")
+    private List<Transaction> transactions;
+
+    public Long getWalletId() {
+        return walletId;
     }
 
-    public Wallet() {
-    }
-
-    public static Wallet getInstance() {
-        if (instance == null){
-            instance = new Wallet();
-        }
-        return instance;
-    }
-
-    public User getUserId() {
-        return userId;
-    }
-
-    public void setUserId(User userId) {
-        this.userId = userId;
+    public void setWalletId(Long walletId) {
+        this.walletId = walletId;
     }
 
     public BigDecimal getAmount() {
@@ -71,19 +61,41 @@ public class Wallet extends AbstractEntity{
         this.currency = currency;
     }
 
-    public List<Transaction> getTransactions(){
-        return transactions;
-    }
-
-    public void setTransactions(Transaction transaction){
-        transactions.add(transaction);
-    }
-
-    public BigDecimal getBudgetLimit(){
+    public BigDecimal getBudgetLimit() {
         return budgetLimit;
     }
 
-    public void setBudgetLimit(BigDecimal amount){
-        this.budgetLimit = amount;
+    public void setBudgetLimit(BigDecimal budgetLimit) {
+        this.budgetLimit = budgetLimit;
+    }
+
+    public User getClient() {
+        return client;
+    }
+
+    public void setClient(User client) {
+        this.client = client;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public void addTransaction(Transaction transaction){
+        Objects.requireNonNull(transaction);
+        if (transactions == null) transactions = new ArrayList<>();
+        transactions.add(transaction);
     }
 }

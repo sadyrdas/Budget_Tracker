@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 
 @Service
+//@Transactional ??
 public class UserService {
     private final UserDao userDao;
 
@@ -18,16 +19,18 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public Boolean createUser(String email, String username, String password){
+    @Transactional
+    public Boolean createUser(Long id, String email, String username, String password){
+        Objects.requireNonNull(id);
         Objects.requireNonNull(email);
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
 
-        Boolean result = false;
-        if (email.isEmpty() ||  username.isEmpty() || password.isEmpty()){
-            return  result;
-        }else {
-            User user  = new User(email, username, password);
+        boolean result = false;
+        if (email.isEmpty() ||  username.isEmpty() || password.isEmpty()) {
+            return result;
+        } else {
+            User user  = new User(id, email, username, password);
             userDao.persist(user);
             result = true;
 
@@ -35,25 +38,10 @@ public class UserService {
         return result;
 
     }
-    @Transactional
+
+    @Transactional //readonly ??
     public User findUserByEmail(String userEmail) {
         return userDao.findByEmail(userEmail);
     }
-    @Transactional
-    public Boolean deleteUserByEmail(String email) {
-        Objects.requireNonNull(email);
-
-        Boolean result = false;
-        if(email.isEmpty()) {
-            return result;
-        }else if (userDao.findByEmail(email) == null){
-            return result;
-        }else {
-            userDao.deleteUserByEmail(email);
-        }
-        return true;
-    }
-
-
 
 }
