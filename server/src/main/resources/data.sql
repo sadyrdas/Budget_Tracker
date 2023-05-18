@@ -34,3 +34,8 @@ CREATE TABLE Transactions (
                               FOREIGN KEY (category) REFERENCES Category (category_id),
                               FOREIGN KEY (wallet) REFERENCES Wallet (wallet_id)
 );
+
+CREATE TABLE Goals (
+                       money_goal NUMERIC(19, 2) NOT NULL,
+                       goal VARCHAR(255) NOT NULL
+);

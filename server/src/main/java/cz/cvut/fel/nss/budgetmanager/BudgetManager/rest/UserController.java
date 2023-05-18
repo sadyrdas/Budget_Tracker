@@ -10,11 +10,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("rest/user")
 public class UserController {
     private final UserService userService;
 
@@ -35,12 +34,13 @@ public class UserController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/getUser",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public User getUser(@RequestBody User user) {
-        User u = userService.findUserByEmail(user.getEmail());
-        System.out.println("Found user with email" + " " + user.getEmail());
+
+    @GetMapping(value = "/getUserByEmail" , produces = MediaType.APPLICATION_JSON_VALUE)
+    public User getUser(@RequestParam("email") String userEmail) {
+        User u = userService.findUserByEmail(userEmail);
+        System.out.println("Found user with email" + " " + userEmail);
         if (u == null){
-            throw new NotFoundException("User with that email" + user.getEmail() + " doesn't exist");
+            throw new NotFoundException("User with that email" + userEmail + " doesn't exist");
         }
         return u;
     }

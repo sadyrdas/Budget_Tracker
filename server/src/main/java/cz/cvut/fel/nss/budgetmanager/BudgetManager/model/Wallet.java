@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -33,9 +34,17 @@ public class Wallet{
     @Column(nullable = false)
     private String name;
 
+    @ElementCollection
+    @MapKeyColumn(name = "goal")
+    @Column(name = "money_goal")
+    @CollectionTable(name = "goals")
+    private Map<String, BigDecimal> budgetGoal;
 
     @OneToMany(mappedBy = "wallet")
     private List<Transaction> transactions;
+
+    public Wallet() {
+    }
 
     public Long getWalletId() {
         return walletId;
@@ -97,5 +106,13 @@ public class Wallet{
         Objects.requireNonNull(transaction);
         if (transactions == null) transactions = new ArrayList<>();
         transactions.add(transaction);
+    }
+
+    public Map<String, BigDecimal> getBudgetGoal() {
+        return budgetGoal;
+    }
+
+    public void setBudgetGoal(Map<String, BigDecimal> budgetGoal) {
+        this.budgetGoal = budgetGoal;
     }
 }
