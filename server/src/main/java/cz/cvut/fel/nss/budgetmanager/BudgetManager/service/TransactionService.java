@@ -8,11 +8,17 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.TypeTransaction;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionDao;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.WalletDao;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,6 +57,30 @@ public class TransactionService {
 
     @Transactional List<Transaction> findTransactionsByMessage(String description){
         return transactionDao.findByDescription(description);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Transaction> searchTransactions(Category category, LocalDate date, String description, BigDecimal amount) {
+        // Perform the search based on the provided criteria
+        if (category != null) {
+            // Search by category
+            return transactionDao.findByCategory(category);
+        } else if (date != null) {
+            // Search by date
+            // Adjust the date parameter based on your requirements (e.g., include a date range)
+            LocalDateTime startDate = date.atStartOfDay();
+            LocalDateTime endDate = date.atTime(LocalTime.MAX);
+            return transactionDao.getTransactionsWithinInterval(startDate, endDate);
+        } else if (description != null) {
+            // Search by description
+            return transactionDao.findByDescription(description);
+        } else if (amount != null) {
+            // Search by amount
+            return transactionDao.findByAmount(amount);
+        } else {
+            // No criteria provided, return all transactions
+            return transactionDao.findAll();
+        }
     }
 
     @Transactional
@@ -123,5 +153,50 @@ public class TransactionService {
         }
 
         return totalIncome;
+    }
+
+    @Transactional
+    public void deleteTransaction(Long id) {
+        Transaction transaction = transactionDao.find(id);
+        if (transaction == null) {
+            throw new NotFoundException("Transaction not found");
+        }
+
+        transactionDao.remove(transaction);
+    }
+
+    public Resource exportTransactions() {
+        List<Transaction> transactions = transactionDao.findAll();
+
+        // Create a StringBuilder to build the CSV content
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append("Date,Description,Category,Amount\n"); // CSV header
+
+        for (Transaction transaction : transactions) {
+            csvContent.append(formatCsvField(transaction.getDate().toString()))
+                    .append(",")
+                    .append(formatCsvField(transaction.getDescription()))
+                    .append(",")
+                    .append(formatCsvField(transaction.getCategory().toString()))
+                    .append(",")
+                    .append(formatCsvField(transaction.getMoney().toString()))
+                    .append("\n");
+        }
+
+        // Convert the CSV content to a byte array
+        byte[] csvBytes = csvContent.toString().getBytes(StandardCharsets.UTF_8);
+
+        // Create a ByteArrayResource from the byte array
+        ByteArrayResource resource = new ByteArrayResource(csvBytes);
+
+        return resource;
+    }
+
+    private String formatCsvField(String field) {
+        // Escape double quotes and handle null values
+        if (field == null) {
+            return "";
+        }
+        return "\"" + field.replace("\"", "\"\"") + "\"";
     }
 }
