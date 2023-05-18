@@ -5,6 +5,7 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Transaction;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,12 +15,12 @@ public class TransactionDao extends BaseDao<Transaction>{
     /**
      * Constructs a new BaseDao instance with the given type parameter.
      *
-     * @param type the class type of the entity managed by this BaseDao.
+     * the class type of the entity managed by this BaseDao.
      */
-    public TransactionDao(Class<Transaction> type) {
-        super(type);
-    }
 
+    public TransactionDao() {
+        super(Transaction.class);
+    }
 
     public List<Transaction> findByCategory(Category category){
         TypedQuery<Transaction> query = em.createQuery("SELECT t FROM Transaction t WHERE t.category = :category",
@@ -27,6 +28,7 @@ public class TransactionDao extends BaseDao<Transaction>{
         query.setParameter("category", category);
         return query.getResultList();
     }
+
 
     public List<Transaction> findByAmount(BigDecimal money) {
         TypedQuery<Transaction> query = em.createQuery("SELECT t FROM Transaction t WHERE t.money = :money",

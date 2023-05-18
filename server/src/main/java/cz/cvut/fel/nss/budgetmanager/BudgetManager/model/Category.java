@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @Table(name = "category")
 @NamedQueries({
         @NamedQuery(name = "findCategoryByName", query = "SELECT c FROM Category c WHERE c.name = :name "),
-        @NamedQuery(name = "updateCategoryByName", query = "UPDATE Category set name = name where Category.name= :name")
+        @NamedQuery(name = "updateCategoryByName", query = "UPDATE Category c set c.name =: name where c.name=: name")
 })
 public class Category{
     @Id
@@ -16,7 +16,7 @@ public class Category{
     private Long categoryId;
 
     @Basic(optional = false)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "name")
     private String name;
 
     public Long getCategoryId() {

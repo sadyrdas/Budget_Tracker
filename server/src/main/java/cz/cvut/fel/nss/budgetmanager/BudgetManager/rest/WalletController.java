@@ -34,14 +34,14 @@ public class WalletController {
         return ResponseEntity.ok(wallet);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Wallet> createWallet(@RequestParam("amount") BigDecimal inicialAmount){
-        walletService.createSingletonWallet(inicialAmount);
+    @PostMapping(value = "rest/wallet/createWallet",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Wallet> createWallet(@RequestParam("amount") BigDecimal initialAmount){
+        walletService.createSingletonWallet(initialAmount);
         Wallet singletonWallet = walletService.getSingletonWallet();
         return ResponseEntity.status(HttpStatus.CREATED).body(singletonWallet);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "rest/wallet/addGoal", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Wallet> addGoal(@RequestParam("goal") String goal, @RequestParam("money_goal") BigDecimal moneyForGoal){
         Wallet wallet = walletService.getSingletonWallet();
         walletService.addGoal(goal, moneyForGoal);
