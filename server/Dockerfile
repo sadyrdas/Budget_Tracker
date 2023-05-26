@@ -2,10 +2,7 @@ FROM eclipse-temurin:17-jdk-jammy
 
 WORKDIR /app
 
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-RUN ./mvnw dependency:go-offline
+COPY . .
+RUN ./mvnw clean install
 
-COPY src ./src
-EXPOSE 8081
-CMD ["./mvnw", "spring-boot:run"]
+CMD ./mvnw spring-boot:run
