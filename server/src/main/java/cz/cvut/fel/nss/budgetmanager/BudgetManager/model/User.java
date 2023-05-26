@@ -1,6 +1,5 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
-
 import jakarta.persistence.*;
 
 @Entity
@@ -9,9 +8,14 @@ import jakarta.persistence.*;
         @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
         @NamedQuery(name = "User.deleteByEmail", query = "DELETE  FROM User u WHERE u.email = :email")
 })
-public class User extends AbstractEntity {
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "client_id")
+    private Long clientId;
+
     @Basic(optional = false)
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Basic(optional = false)
@@ -22,15 +26,22 @@ public class User extends AbstractEntity {
     @Column(nullable = false)
     private String username;
 
-
-    public User(String email, String password, String username) {
+    public User(Long id, String email, String password, String username) {
+        this.clientId = id;
         this.email = email;
         this.password = password;
         this.username = username;
     }
 
-
     public User() {
+    }
+
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
     public String getEmail() {

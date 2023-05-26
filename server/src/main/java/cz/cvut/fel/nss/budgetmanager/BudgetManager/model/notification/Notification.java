@@ -1,26 +1,36 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model.notification;
 
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.AbstractEntity;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-public class Notification extends AbstractEntity {
+public class Notification{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
+    private Long id;
+
+
+    @Basic(optional = false)
+    @Column(nullable = false)
     private LocalDateTime dateTime;
 
     @OneToOne
     private Message info;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
     private String type;
 
 
     @ManyToOne
     private User userId;
 
-    public Notification(LocalDateTime dateTime, Message info, String type, User userId) {
+    public Notification(Long id, LocalDateTime dateTime, Message info, String type, User userId) {
+        this.id = id;
         this.dateTime = dateTime;
         this.info = info;
         this.type = type;
@@ -62,4 +72,9 @@ public class Notification extends AbstractEntity {
     public void setUserId(User userId) {
         this.userId = userId;
     }
+
+    public Long getId() {
+        return id;
+    }
+
 }

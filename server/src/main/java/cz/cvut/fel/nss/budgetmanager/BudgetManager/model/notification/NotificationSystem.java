@@ -1,8 +1,11 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model.notification;
 
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.AbstractEntity;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
-public class NotificationSystem extends AbstractEntity {
+public class NotificationSystem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
+    private Long id;
 }
