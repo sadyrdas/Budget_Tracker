@@ -38,7 +38,7 @@ public class WalletService {
             synchronized (this) {
                 if (wallet == null) {
                     Wallet singletonWallet = new Wallet();
-                    wallet.setAmount(initialAmount);
+                    singletonWallet.setAmount(initialAmount);
                     walletDao.persist(wallet);
                     wallet = singletonWallet;
                 }
@@ -116,5 +116,14 @@ public class WalletService {
         if (totalExpenses.compareTo(wallet.getBudgetLimit()) > 0) {
             notificationService.sendBudgetOverlimitNotification(wallet);
         }
+    }
+
+    public void addGoal(String goal, BigDecimal money){
+        Map<String, BigDecimal> currentBudgetGoals = wallet.getBudgetGoal();
+        if (currentBudgetGoals == null) {
+            currentBudgetGoals = new HashMap<>();
+        }
+        currentBudgetGoals.put(goal, money);
+        wallet.setBudgetGoal(currentBudgetGoals);
     }
 }

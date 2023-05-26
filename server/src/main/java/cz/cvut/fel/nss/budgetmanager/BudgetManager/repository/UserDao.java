@@ -11,10 +11,10 @@ public class UserDao extends BaseDao<User>{
     /**
      * Constructs a new BaseDao instance with the given type parameter.
      *
-     * @param type the class type of the entity managed by this BaseDao.
+     * the class type of the entity managed by this BaseDao.
      */
-    public UserDao(Class<User> type) {
-        super(type);
+    public UserDao() {
+        super(User.class);
     }
 
     @Transactional

@@ -12,10 +12,10 @@ public class WalletDao extends BaseDao<Wallet>{
     /**
      * Constructs a new BaseDao instance with the given type parameter.
      *
-     * @param type the class type of the entity managed by this BaseDao.
+     * the class type of the entity managed by this BaseDao.
      */
-    public WalletDao(Class<Wallet> type) {
-        super(type);
+    public WalletDao() {
+        super(Wallet.class);
     }
 
     public Wallet findSingletonWallet() {
