@@ -22,6 +22,8 @@ public class Transaction extends AbstractEntity {
     @Column(nullable = false)
     private String name;
 
+
+
     @Basic(optional = false)
     @Column(nullable = false)
     private BigDecimal money;

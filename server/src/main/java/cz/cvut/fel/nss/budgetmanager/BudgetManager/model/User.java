@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @Table(name = "client")
 @NamedQueries({
         @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
-        @NamedQuery(name = "User.deleteByEmail", query = "DELETE FROM User u WHERE u.email = :email")
+        @NamedQuery(name = "User.deleteByEmail", query = "DELETE  FROM User u WHERE u.email = :email")
 })
 public class User extends AbstractEntity {
     @Basic(optional = false)
