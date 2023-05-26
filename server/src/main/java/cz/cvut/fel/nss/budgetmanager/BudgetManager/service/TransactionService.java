@@ -55,7 +55,8 @@ public class TransactionService {
         return transactionDao.findByAmount(money);
     }
 
-    @Transactional List<Transaction> findTransactionsByMessage(String description){
+    @Transactional
+    public List<Transaction> findTransactionsByMessage(String description){
         return transactionDao.findByDescription(description);
     }
 
