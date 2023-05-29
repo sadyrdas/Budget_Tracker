@@ -11,10 +11,10 @@ CREATE TABLE Client (
 CREATE TABLE Wallet (
                         wallet_id SERIAL PRIMARY KEY,
                         amount NUMERIC(19, 2) NOT NULL,
-                        currency currency NOT NULL,
-                        client INTEGER NOT NULL,
+                        client VARCHAR(255),
                         name VARCHAR(255) NOT NULL ,
-                        FOREIGN KEY (client) REFERENCES client (client_id)
+                        budget_limit NUMERIC(19, 2),
+                        FOREIGN KEY (client) REFERENCES client (email)
 );
 
 CREATE TABLE Category (
@@ -37,5 +37,7 @@ CREATE TABLE Transactions (
 
 CREATE TABLE Goals (
                        money_goal NUMERIC(19, 2) NOT NULL,
-                       goal VARCHAR(255) NOT NULL
+                       goal VARCHAR(255) NOT NULL,
+                       wallet_id INTEGER NOT NULL ,
+                       FOREIGN KEY (wallet_id) REFERENCES Wallet (wallet_id)
 );

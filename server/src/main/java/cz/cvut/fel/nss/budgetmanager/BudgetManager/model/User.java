@@ -26,8 +26,7 @@ public class User {
     @Column(nullable = false)
     private String username;
 
-    public User(Long id, String email, String password, String username) {
-        this.clientId = id;
+    public User(String email, String password, String username) {
         this.email = email;
         this.password = password;
         this.username = username;

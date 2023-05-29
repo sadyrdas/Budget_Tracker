@@ -20,14 +20,16 @@ public class Wallet{
     @Column(nullable = false)
     private BigDecimal amount;
 
+    @Transient
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
     @Basic(optional = false)
+    @Column(name = "budget_limit")
     private BigDecimal budgetLimit;
 
     @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="client")
+    @JoinColumn(name="client", referencedColumnName = "email")
     private User client;
 
     @Basic(optional = false)
@@ -40,6 +42,7 @@ public class Wallet{
     @CollectionTable(name = "goals")
     private Map<String, BigDecimal> budgetGoal;
 
+    @Transient
     @OneToMany(mappedBy = "wallet")
     private List<Transaction> transactions;
 

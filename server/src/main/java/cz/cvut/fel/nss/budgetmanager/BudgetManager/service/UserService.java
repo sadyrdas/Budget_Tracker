@@ -20,8 +20,7 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean createUser(Long id, String email, String username, String password){
-        Objects.requireNonNull(id);
+    public Boolean createUser(String email, String username, String password){
         Objects.requireNonNull(email);
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
@@ -30,7 +29,7 @@ public class UserService {
         if (email.isEmpty() ||  username.isEmpty() || password.isEmpty()) {
             return result;
         } else {
-            User user  = new User(id, email, username, password);
+            User user  = new User(email, username, password);
             userDao.persist(user);
             result = true;
 

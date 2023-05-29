@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> register(@RequestBody User user) {
-        Boolean result = userService.createUser(user.getClientId(), user.getEmail(), user.getUsername(),
+        Boolean result = userService.createUser( user.getEmail(), user.getUsername(),
                 user.getPassword());
         if (!result) {
             throw new UserAlreadyExists("User with that email " + user.getEmail() + " already exists");

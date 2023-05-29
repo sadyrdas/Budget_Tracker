@@ -1,8 +1,6 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.service;
 
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Transaction;
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.TypeTransaction;
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.*;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionDao;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.WalletDao;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,13 +31,16 @@ public class WalletService {
         this.wallet = null;
     }
 
-    public void createSingletonWallet(BigDecimal initialAmount) {
+    public void createSingletonWallet(BigDecimal initialAmount, String name, BigDecimal budgetLimit, User user) {
         if (wallet == null) {
             synchronized (this) {
                 if (wallet == null) {
                     Wallet singletonWallet = new Wallet();
                     singletonWallet.setAmount(initialAmount);
-                    walletDao.persist(wallet);
+                    singletonWallet.setName(name);
+                    singletonWallet.setBudgetLimit(budgetLimit);
+                    singletonWallet.setClient(user);
+                    walletDao.persist(singletonWallet);
                     wallet = singletonWallet;
                 }
             }
