@@ -3,7 +3,6 @@ package cz.cvut.fel.nss.budgetmanager.BudgetManager.rest;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.UserDTO;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.WalletGoalResponseDTO;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.WalletResponseDTO;
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Currency;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.UserService;
@@ -47,15 +46,13 @@ public class WalletController {
     }
 
     @PostMapping("/createWallet")
-    public ResponseEntity<WalletResponseDTO> createWallet(@RequestParam("amount") BigDecimal initialAmount, @RequestParam("currency") Currency currency,
-                                                          @RequestParam("client") String email, @RequestParam("name") String name,
-                                                          @RequestParam("budget_limit") BigDecimal budget_limit) {
-        User user = userService.findUserByEmail(email);
-        walletService.createSingletonWallet(initialAmount, name, budget_limit, user);
+    public ResponseEntity<WalletResponseDTO> createWallet(@RequestBody Wallet wallet) {
+        User user = userService.findUserByEmail(wallet.getClient().getEmail());
+        walletService.createSingletonWallet(wallet.getAmount(), wallet.getName(), wallet.getBudgetLimit(), user);
         Wallet singletonWallet = walletService.getSingletonWallet();
-        singletonWallet.setCurrency(currency);
+        singletonWallet.setCurrency(wallet.getCurrency());
         UserDTO clientDTO = new UserDTO();
-        clientDTO.setEmail(email);
+        clientDTO.setEmail(wallet.getClient().getEmail());
 
         ModelMapper modelMapper = new ModelMapper();
         WalletResponseDTO walletResponseDTO = modelMapper.map(singletonWallet, WalletResponseDTO.class);
