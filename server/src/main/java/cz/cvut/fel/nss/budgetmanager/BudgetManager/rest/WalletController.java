@@ -30,7 +30,7 @@ public class WalletController {
 
     }
 
-    @PutMapping(value = "/updateWallet",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/wallet",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WalletResponseDTO> updateWallet(@RequestBody Wallet updatedWallet){
         Wallet wallet = walletService.getSingletonWallet();
 
@@ -61,7 +61,12 @@ public class WalletController {
         return ResponseEntity.status(HttpStatus.CREATED).body(walletResponseDTO);
     }
 
-
+    @PutMapping(value = "/addMoney")
+    public ResponseEntity<Void> addMoneyToWallet(@RequestParam("user") String email, @RequestParam("amount") BigDecimal amount) {
+        Wallet userWallet = walletService.getByClientEmail(email);
+        walletService.addMoney(userWallet, amount);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 
     @PostMapping(value = "/addGoal", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WalletGoalResponseDTO> addGoal(@RequestBody WalletGoalResponseDTO request) {

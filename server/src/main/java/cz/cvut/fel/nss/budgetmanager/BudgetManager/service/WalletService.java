@@ -63,6 +63,16 @@ public class WalletService {
         walletDao.update(wallet);
     }
 
+    public void addMoney(Wallet wallet, BigDecimal amount) {
+        Objects.requireNonNull(wallet);
+        wallet.setAmount(wallet.getAmount().add(amount));
+        walletDao.update(wallet);
+    }
+
+    public Wallet getByClientEmail(String email) {
+        return walletDao.findByClientEmail(email);
+    }
+
     public BigDecimal getTotalBalance() {
         if (wallet != null) {
             return wallet.getAmount();

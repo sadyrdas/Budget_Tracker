@@ -23,4 +23,10 @@ public class WalletDao extends BaseDao<Wallet>{
         List<Wallet> wallets = query.getResultList();
         return wallets.isEmpty() ? null : wallets.get(0);
     }
+
+    public Wallet findByClientEmail(String email){
+        TypedQuery<Wallet> query = em.createNamedQuery("findByClientEmail", Wallet.class);
+        query.setParameter("email", email);
+        return query.getSingleResult();
+    }
 }

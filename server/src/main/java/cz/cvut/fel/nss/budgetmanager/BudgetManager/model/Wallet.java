@@ -10,6 +10,9 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "wallet")
+@NamedQueries({
+        @NamedQuery(name = "findByClientEmail", query = "SELECT w FROM Wallet w WHERE w.client.email =:email")
+})
 public class Wallet{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
