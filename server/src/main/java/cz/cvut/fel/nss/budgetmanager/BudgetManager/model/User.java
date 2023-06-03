@@ -1,6 +1,7 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
 import jakarta.persistence.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = "client")
@@ -33,6 +34,10 @@ public class User {
     }
 
     public User() {
+    }
+
+    public void encodePassword(PasswordEncoder encoder) {
+        this.password = encoder.encode(password);
     }
 
     public Long getClientId() {
