@@ -35,7 +35,7 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public Category getCategoryById(Long id) {
+    public Category getCategory(Long id) {
         return categoryDao.find(id);
     }
 
