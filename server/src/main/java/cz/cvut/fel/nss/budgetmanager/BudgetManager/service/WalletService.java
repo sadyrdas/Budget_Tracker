@@ -1,6 +1,7 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.service;
 
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.*;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.notification.NotificationType;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionDao;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.WalletDao;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +26,11 @@ public class WalletService {
     private Wallet wallet;
 
     @Autowired
-    public WalletService(WalletDao walletDao, TransactionDao transactionDao) {
+    public WalletService(WalletDao walletDao, TransactionDao transactionDao, NotificationService notificationService) {
         this.walletDao = walletDao;
         this.transactionDao = transactionDao;
         this.wallet = null;
+        this.notificationService = notificationService;
     }
 
     public void createSingletonWallet(BigDecimal initialAmount, String name, BigDecimal budgetLimit, User user) {
@@ -125,7 +127,10 @@ public class WalletService {
         BigDecimal totalExpenses = transactionService.calculateTotalExpenses(wallet);
 
         if (totalExpenses.compareTo(wallet.getBudgetLimit()) > 0) {
-            notificationService.sendBudgetOverlimitNotification(wallet);
+            notificationService.pushNotification(
+                    wallet.getClient().getClientId(),
+                    NotificationType.BUDGET_OVERLIMIT,
+                    NotificationType.BUDGET_OVERLIMIT.getValue());
         }
     }
 

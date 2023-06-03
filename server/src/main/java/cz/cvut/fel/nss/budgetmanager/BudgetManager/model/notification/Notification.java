@@ -1,80 +1,67 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model.notification;
 
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-@Entity
-public class Notification{
+@Document(collection = "notifications")
+public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
-    private Long id;
-
-
-    @Basic(optional = false)
-    @Column(nullable = false)
-    private LocalDateTime dateTime;
-
-    @OneToOne
-    private Message info;
-
-    @Basic(optional = false)
-    @Column(nullable = false)
-    private String type;
-
-
-    @ManyToOne
-    private User userId;
-
-    public Notification(Long id, LocalDateTime dateTime, Message info, String type, User userId) {
-        this.id = id;
-        this.dateTime = dateTime;
-        this.info = info;
-        this.type = type;
-        this.userId = userId;
-    }
+    private String id;
+    private Instant timestamp;
+    private String info;
+    private NotificationType type;
+    private Long userId;
 
     public Notification() {
-
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public Message getInfo() {
-        return info;
-    }
-
-    public void setInfo(Message info) {
+    public Notification(Instant timestamp, String info, NotificationType type, Long userId) {
+        this.timestamp = timestamp;
         this.info = info;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
         this.type = type;
-    }
-
-    public User getUserId() {
-        return userId;
-    }
-
-    public void setUserId(User userId) {
         this.userId = userId;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Instant timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public NotificationType getType() {
+        return type;
+    }
+
+    public void setType(NotificationType type) {
+        this.type = type;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 }
