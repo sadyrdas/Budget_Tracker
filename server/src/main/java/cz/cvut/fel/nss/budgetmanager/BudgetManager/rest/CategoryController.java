@@ -26,7 +26,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory) {
         Category category = categoryService.getCategory(id);
 
@@ -39,7 +39,7 @@ public class CategoryController {
         return ResponseEntity.ok(category);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         Category category = categoryService.getCategory(id);
         if (category == null) {
@@ -50,7 +50,7 @@ public class CategoryController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<Category> getCategory(@PathVariable Long id) {
         Category category = categoryService.getCategory(id);
 
