@@ -1,5 +1,6 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -21,23 +22,24 @@ public class Transaction {
     private String description;
 
     @Basic(optional = false)
-    @Column(name = "trans_date", nullable = false)
+    @Column(name = "trans_date", nullable = false, columnDefinition = "TIMESTAMP")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime date;
 
     @Basic(optional = false)
     @Column(nullable = false)
     private BigDecimal money;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "type")
     private TypeTransaction typeTransaction;
 
     @ManyToOne
-    @JoinColumn(name = "wallet")
+    @JoinColumn(name = "wallet", referencedColumnName = "wallet_id")
     private Wallet wallet;
 
-    @OneToOne
-    @JoinColumn(name = "category")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "category", referencedColumnName = "name")
     private Category category;
 
     public Long getTransId() {
@@ -53,7 +55,9 @@ public class Transaction {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (!description.isEmpty()) {
+            this.description = description;
+        }
     }
 
     public LocalDateTime getDate() {
@@ -61,7 +65,9 @@ public class Transaction {
     }
 
     public void setDate(LocalDateTime date) {
-        this.date = date;
+        if (date != null){
+            this.date = date;
+        }
     }
 
     public BigDecimal getMoney() {
@@ -69,7 +75,9 @@ public class Transaction {
     }
 
     public void setMoney(BigDecimal money) {
-        this.money = money;
+        if (money != null) {
+            this.money = money;
+        }
     }
 
     public TypeTransaction getTypeTransaction() {
@@ -77,7 +85,9 @@ public class Transaction {
     }
 
     public void setTypeTransaction(TypeTransaction typeTransaction) {
-        this.typeTransaction = typeTransaction;
+        if (typeTransaction != null){
+            this.typeTransaction = typeTransaction;
+        }
     }
 
     public Wallet getWallet() {
@@ -93,7 +103,9 @@ public class Transaction {
     }
 
     public void setCategory(Category category) {
-        this.category = category;
+        if (category != null) {
+            this.category = category;
+        }
     }
 
     public static class Builder {
@@ -101,7 +113,6 @@ public class Transaction {
         private Wallet wallet;
         private String description;
         private TypeTransaction typeTransaction;
-        private Currency currency;
         private BigDecimal money;
         private LocalDateTime transDate;
         // Other attributes
@@ -126,17 +137,13 @@ public class Transaction {
             return this;
         }
 
-        public Builder currency() {
-            this.currency = wallet.getCurrency();
-            return this;
-        }
 
-        public Builder money(BigDecimal money){
+        public Builder money(BigDecimal money) {
             this.money = money;
             return this;
         }
 
-        public Builder transDate(){
+        public Builder transDate() {
             this.transDate = LocalDateTime.now();
             return this;
         }
@@ -149,7 +156,6 @@ public class Transaction {
             transaction.wallet = this.wallet;
             transaction.description = this.description;
             transaction.typeTransaction = this.typeTransaction;
-            currency = wallet.getCurrency(); // TODO check if we need add atr currency into trans action
             transaction.money = this.money;
             transaction.date = this.transDate;
             // Set other attributes
