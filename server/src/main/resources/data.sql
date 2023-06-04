@@ -6,6 +6,7 @@ CREATE TABLE Client (
                         email VARCHAR(255) UNIQUE NOT NULL,
                         password VARCHAR(255) NOT NULL,
                         username VARCHAR(255) UNIQUE NOT NULL
+
 );
 
 CREATE TABLE Wallet (
@@ -14,12 +15,13 @@ CREATE TABLE Wallet (
                         client VARCHAR(255),
                         name VARCHAR(255) NOT NULL ,
                         budget_limit NUMERIC(19, 2),
+                        currency VARCHAR(255) NOT NULL,
                         FOREIGN KEY (client) REFERENCES client (email)
 );
 
 CREATE TABLE Category (
                           category_id SERIAL PRIMARY KEY,
-                          name VARCHAR(255) NOT NULL
+                          name VARCHAR(255) UNIQUE NOT NULL
 );
 
 CREATE TABLE Transactions (
@@ -27,11 +29,11 @@ CREATE TABLE Transactions (
                               description VARCHAR(255) NOT NULL,
                               money NUMERIC(19, 2) NOT NULL,
                               type transaction_type NOT NULL,
-                              category INTEGER NOT NULL,
+                              category VARCHAR(255) NOT NULL,
                               wallet INTEGER NOT NULL,
                               budget_limit NUMERIC(19, 2),
                               trans_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
-                              FOREIGN KEY (category) REFERENCES Category (category_id),
+                              FOREIGN KEY (category) REFERENCES Category (name),
                               FOREIGN KEY (wallet) REFERENCES Wallet (wallet_id)
 );
 

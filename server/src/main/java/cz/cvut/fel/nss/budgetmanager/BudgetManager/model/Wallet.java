@@ -1,6 +1,7 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,8 +24,7 @@ public class Wallet{
     @Column(nullable = false)
     private BigDecimal amount;
 
-    @Transient
-    @Enumerated(EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     private Currency currency;
 
     @Basic(optional = false)

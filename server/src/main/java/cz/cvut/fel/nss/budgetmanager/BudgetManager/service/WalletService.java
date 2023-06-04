@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class WalletService {
         this.notificationService = notificationService;
     }
 
-    public void createSingletonWallet(BigDecimal initialAmount, String name, BigDecimal budgetLimit, User user) {
+    public void createSingletonWallet(BigDecimal initialAmount, String name, BigDecimal budgetLimit, User user, Currency currency) {
         if (wallet == null) {
             synchronized (this) {
                 if (wallet == null) {
@@ -42,6 +43,7 @@ public class WalletService {
                     singletonWallet.setName(name);
                     singletonWallet.setBudgetLimit(budgetLimit);
                     singletonWallet.setClient(user);
+                    singletonWallet.setCurrency(currency);
                     walletDao.persist(singletonWallet);
                     wallet = singletonWallet;
                 }
@@ -141,5 +143,47 @@ public class WalletService {
         }
         currentBudgetGoals.put(goal, money);
         wallet.setBudgetGoal(currentBudgetGoals);
+    }
+
+    public void changeCurrency(Currency currency, Wallet wallet){
+        switch (currency) {
+            case CZK -> {
+                if (wallet.getCurrency() == Currency.EUR) {
+                    BigDecimal multipliedEURtoCZK = new BigDecimal("22");
+                    wallet.setAmount(wallet.getAmount().multiply(multipliedEURtoCZK));
+                }
+                if (wallet.getCurrency() == Currency.USD) {
+                    BigDecimal multipliedUSDtoCZK = new BigDecimal("22.05");
+                    wallet.setAmount(wallet.getAmount().multiply(multipliedUSDtoCZK));
+
+                }
+                wallet.setCurrency(Currency.CZK);
+                walletDao.update(wallet);
+            }
+            case EUR -> {
+                if (wallet.getCurrency() == Currency.CZK) {
+                    BigDecimal multipliedCZKtoEur = new BigDecimal("0.042");
+                    wallet.setAmount(wallet.getAmount().multiply(multipliedCZKtoEur));
+                }
+                if (wallet.getCurrency() == Currency.USD) {
+                    BigDecimal multipliedUSDtoEUR = new BigDecimal("0.93");
+                    wallet.setAmount(wallet.getAmount().multiply(multipliedUSDtoEUR));
+                }
+                wallet.setCurrency(Currency.EUR);
+                walletDao.update(wallet);
+            }
+            case USD -> {
+                if (wallet.getCurrency() == Currency.EUR) {
+                    BigDecimal multipliedEURtoUSD = new BigDecimal("1.07");
+                    wallet.setAmount(wallet.getAmount().multiply(multipliedEURtoUSD));
+                }
+                if (wallet.getCurrency() == Currency.CZK){
+                    BigDecimal multipliedCZKToUSD = new BigDecimal("0.045");
+                    wallet.setAmount(wallet.getAmount().multiply(multipliedCZKToUSD));
+                }
+                wallet.setCurrency(Currency.USD);
+                walletDao.update(wallet);
+            }
+        }
     }
 }

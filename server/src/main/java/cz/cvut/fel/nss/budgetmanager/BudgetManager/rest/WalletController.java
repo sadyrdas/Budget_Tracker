@@ -3,6 +3,7 @@ package cz.cvut.fel.nss.budgetmanager.BudgetManager.rest;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.UserDTO;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.WalletGoalResponseDTO;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.WalletResponseDTO;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Currency;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.UserService;
@@ -48,9 +49,8 @@ public class WalletController {
     @PostMapping("/createWallet")
     public ResponseEntity<WalletResponseDTO> createWallet(@RequestBody Wallet wallet) {
         User user = userService.findUserByEmail(wallet.getClient().getEmail());
-        walletService.createSingletonWallet(wallet.getAmount(), wallet.getName(), wallet.getBudgetLimit(), user);
+        walletService.createSingletonWallet(wallet.getAmount(), wallet.getName(), wallet.getBudgetLimit(), user, wallet.getCurrency());
         Wallet singletonWallet = walletService.getSingletonWallet();
-        singletonWallet.setCurrency(wallet.getCurrency());
         UserDTO clientDTO = new UserDTO();
         clientDTO.setEmail(wallet.getClient().getEmail());
 
@@ -83,6 +83,21 @@ public class WalletController {
         ModelMapper modelMapper = new ModelMapper();
         WalletGoalResponseDTO walletGoalResponseDTO = modelMapper.map(wallet, WalletGoalResponseDTO.class);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(walletGoalResponseDTO);
+    }
+
+    @PutMapping(value = "/currency")
+    public ResponseEntity<Void> changeCurrency(@RequestParam("currency")Currency currency, @RequestParam("user") String email){
+        Wallet userWallet = walletService.getByClientEmail(email);
+        walletService.changeCurrency(currency, userWallet);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping(value = "/yourWallet")
+    public ResponseEntity<WalletResponseDTO> getWallet(@RequestParam("id") Long id){
+        Wallet wallet = walletService.getWalletById(id);
+        ModelMapper modelMapper = new ModelMapper();
+        WalletResponseDTO walletResponseDTO = modelMapper.map(wallet, WalletResponseDTO.class);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(walletResponseDTO);
     }
 
 }
