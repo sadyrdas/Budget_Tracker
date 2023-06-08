@@ -28,10 +28,9 @@ CREATE TABLE Transactions (
                               transactions_id SERIAL PRIMARY KEY,
                               description VARCHAR(255) NOT NULL,
                               money NUMERIC(19, 2) NOT NULL,
-                              type transaction_type NOT NULL,
+                              type VARCHAR(255) NOT NULL,
                               category VARCHAR(255) NOT NULL,
                               wallet INTEGER NOT NULL,
-                              budget_limit NUMERIC(19, 2),
                               trans_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
                               FOREIGN KEY (category) REFERENCES Category (name),
                               FOREIGN KEY (wallet) REFERENCES Wallet (wallet_id)

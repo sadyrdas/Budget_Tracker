@@ -21,7 +21,7 @@ public class StatisticController {
     }
 
     @GetMapping(value="/generate")
-    public Map<String, BigDecimal> generateStatistics(@RequestParam TypeInterval intervalType) {
+    public Map<String, BigDecimal> generateStatistics(@RequestParam("intervalType") TypeInterval intervalType) {
         return statisticsService.generateStatistics(intervalType);
     }
 }
