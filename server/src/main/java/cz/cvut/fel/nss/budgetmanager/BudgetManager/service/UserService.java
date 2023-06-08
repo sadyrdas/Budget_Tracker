@@ -3,6 +3,7 @@ package cz.cvut.fel.nss.budgetmanager.BudgetManager.service;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,11 +13,13 @@ import java.util.Objects;
 //@Transactional ??
 public class UserService {
     private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    public UserService(UserDao userDao) {
+    public UserService(UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -30,6 +33,7 @@ public class UserService {
             return result;
         } else {
             User user  = new User(email, username, password);
+            user.encodePassword(passwordEncoder);
             userDao.persist(user);
             result = true;
 
