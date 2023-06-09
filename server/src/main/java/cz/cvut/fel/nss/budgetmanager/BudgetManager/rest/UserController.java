@@ -23,6 +23,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ExceptionHandler({UserAlreadyExists.class})
     public ResponseEntity<Void> register(@RequestBody User user) {
         Boolean result = userService.createUser( user.getEmail(), user.getUsername(),
                 user.getPassword());
@@ -36,9 +37,9 @@ public class UserController {
 
 
     @GetMapping(value = "/getUserByEmail" , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ExceptionHandler({NotFoundException.class})
     public User getUser(@RequestParam("email") String userEmail) {
         User u = userService.findUserByEmail(userEmail);
-        System.out.println("Found user with email" + " " + userEmail);
         if (u == null){
             throw new NotFoundException("User with that email" + userEmail + " doesn't exist");
         }

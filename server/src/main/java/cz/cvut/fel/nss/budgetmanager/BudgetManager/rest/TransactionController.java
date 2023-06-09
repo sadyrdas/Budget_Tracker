@@ -45,6 +45,7 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<TransactionResponseDTO> getTransactionById(@PathVariable Long id) {
         Transaction transaction = transactionService.findTransactionById(id);
         if (transaction == null) {
@@ -71,6 +72,7 @@ public class TransactionController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<TransactionResponseDTO> updateTransaction(@PathVariable Long id, @RequestBody Transaction updatedTransaction) {
         Transaction transaction = transactionService.findTransactionById(id);
         if (transaction == null) {
@@ -89,6 +91,7 @@ public class TransactionController {
     }
 
     @DeleteMapping("/{id}")
+    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         Transaction transaction = transactionService.findTransactionById(id);
         if (transaction == null) {
