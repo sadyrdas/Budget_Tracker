@@ -42,7 +42,7 @@ public class Wallet{
     @ElementCollection
     @MapKeyColumn(name = "goal")
     @Column(name = "money_goal")
-    @CollectionTable(name = "goals")
+    @CollectionTable(name = "goals", joinColumns = @JoinColumn(name = "wallet_id"))
     private Map<String, BigDecimal> budgetGoal;
 
     @Transient
@@ -65,7 +65,9 @@ public class Wallet{
     }
 
     public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+        if (amount != null){
+            this.amount = amount;
+        }
     }
 
     public Currency getCurrency() {
@@ -73,7 +75,9 @@ public class Wallet{
     }
 
     public void setCurrency(Currency currency) {
-        this.currency = currency;
+        if (currency != null){
+            this.currency = currency;
+        }
     }
 
     public BigDecimal getBudgetLimit() {
@@ -81,7 +85,9 @@ public class Wallet{
     }
 
     public void setBudgetLimit(BigDecimal budgetLimit) {
-        this.budgetLimit = budgetLimit;
+        if (budgetLimit != null){
+            this.budgetLimit = budgetLimit;
+        }
     }
 
     public User getClient() {
@@ -97,7 +103,9 @@ public class Wallet{
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name != null){
+            this.name = name;
+        }
     }
 
     public List<Transaction> getTransactions() {
