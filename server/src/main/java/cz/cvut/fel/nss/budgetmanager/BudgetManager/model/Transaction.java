@@ -152,6 +152,7 @@ public class Transaction {
             if (money == null) {
                 throw new NotFoundException("Money can't be null");
             }
+            wallet.setAmount(wallet.getAmount().subtract(money));
             this.money = money;
             return this;
         }
