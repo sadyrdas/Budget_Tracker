@@ -4,6 +4,7 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.*;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.notification.NotificationType;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionDao;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.WalletDao;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.kafka.NotificationProducer;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,11 +26,15 @@ public class WalletService {
     private final WalletDao walletDao;
     private final TransactionDao transactionDao;
 
+    private final NotificationProducer notificationProducer;
+
     @Autowired
-    public WalletService(WalletDao walletDao, TransactionDao transactionDao, NotificationService notificationService) {
+    public WalletService(WalletDao walletDao, TransactionDao transactionDao,
+                         NotificationService notificationService, NotificationProducer notificationProducer) {
         this.walletDao = walletDao;
         this.transactionDao = transactionDao;
         this.notificationService = notificationService;
+        this.notificationProducer = notificationProducer;
     }
 
     public Wallet createWallet(String name, User user) {
@@ -110,6 +115,7 @@ public class WalletService {
                     wallet.getClient().getClientId(),
                     NotificationType.BUDGET_OVERLIMIT,
                     NotificationType.BUDGET_OVERLIMIT.getValue());
+            notificationProducer.sendEmail(getWalletById(walletId).getClient().getEmail());
         }
     }
 
