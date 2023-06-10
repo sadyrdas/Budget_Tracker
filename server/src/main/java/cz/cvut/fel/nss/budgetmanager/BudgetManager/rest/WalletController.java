@@ -3,6 +3,7 @@ package cz.cvut.fel.nss.budgetmanager.BudgetManager.rest;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.UserDTO;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.WalletGoalResponseDTO;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.WalletResponseDTO;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.exceptions.NotFoundException;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Currency;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
@@ -53,6 +54,7 @@ public class WalletController {
     }
 
     @PostMapping(value = "/addGoal", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<WalletGoalResponseDTO> addGoal(@RequestBody WalletGoalResponseDTO request) {
         Wallet wallet = SecurityUtils.getCurrentUser().getWallet();
         Map<String, BigDecimal> goal = request.getGoal();
@@ -61,6 +63,9 @@ public class WalletController {
             String goalKey = entry.getKey();
             BigDecimal moneyForGoal = entry.getValue();
             walletService.addGoal(goalKey, moneyForGoal, wallet.getWalletId());
+        }
+        if (goal == null){
+            throw new NotFoundException("Goal must not be null!");
         }
         walletService.updateWallet(wallet);
 
