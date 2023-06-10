@@ -1,6 +1,7 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.exceptions.NotFoundException;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -118,6 +119,9 @@ public class Transaction {
         // Other attributes
 
         public Builder category(Category category) {
+            if (category == null) {
+                throw new NotFoundException("Category can't be null");
+            }
             this.category = category;
             return this;
         }
@@ -128,22 +132,34 @@ public class Transaction {
         }
 
         public Builder name(String name) {
+            if (name == null) {
+                throw new NotFoundException("Transaction name can't be null");
+            }
             this.description = name;
             return this;
         }
 
         public Builder typeTransaction(TypeTransaction typeTransaction) {
+            if (typeTransaction == null) {
+                throw new NotFoundException("Transaction type can't be null");
+            }
             this.typeTransaction = typeTransaction;
             return this;
         }
 
 
         public Builder money(BigDecimal money) {
+            if (money == null) {
+                throw new NotFoundException("Money can't be null");
+            }
             this.money = money;
             return this;
         }
 
         public Builder transDate() {
+            if (category == null) {
+                throw new NotFoundException("Date can't be null");
+            }
             this.transDate = LocalDateTime.now();
             return this;
         }

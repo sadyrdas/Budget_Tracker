@@ -61,13 +61,18 @@ public class TransactionController {
     @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionResponseDTO> createTransaction(@PathVariable Long id,  @RequestBody Transaction transaction) {
         Wallet wallet = walletService.getWalletById(id);
-        transaction.setWallet(wallet);
         Category category = categoryService.getCategoryByName(transaction.getCategory().getName());
-        transaction.setCategory(category);
-        transaction.setDate(LocalDateTime.now());
         ModelMapper modelMapper = new ModelMapper();
-        transactionService.persist(transaction);
-        TransactionResponseDTO transactionResponseDTO = modelMapper.map(transaction, TransactionResponseDTO.class);
+        Transaction.Builder builder = new Transaction.Builder();
+        builder
+                .typeTransaction(transaction.getTypeTransaction())
+                .category(category)
+                .transDate()
+                .wallet(wallet)
+                .money(transaction.getMoney())
+                .name(transaction.getDescription());
+        transactionService.persist(builder.build());
+        TransactionResponseDTO transactionResponseDTO = modelMapper.map(builder.build(), TransactionResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponseDTO);
     }
 
