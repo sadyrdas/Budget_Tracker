@@ -27,10 +27,14 @@ public class User {
     @Column(nullable = false)
     private String username;
 
-    public User(String email, String password, String username) {
+    @OneToOne(mappedBy = "client")
+    private Wallet wallet;
+
+    public User(String email, String password, String username, Wallet wallet) {
         this.email = email;
         this.password = password;
         this.username = username;
+        this.wallet = wallet;
     }
 
     public User() {
@@ -70,5 +74,13 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 }

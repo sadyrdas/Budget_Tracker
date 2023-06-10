@@ -24,42 +24,23 @@ public class WalletService {
 
     private final WalletDao walletDao;
     private final TransactionDao transactionDao;
-    private Wallet wallet;
 
     @Autowired
     public WalletService(WalletDao walletDao, TransactionDao transactionDao, NotificationService notificationService) {
         this.walletDao = walletDao;
         this.transactionDao = transactionDao;
-        this.wallet = null;
         this.notificationService = notificationService;
     }
 
-    public void createSingletonWallet(BigDecimal initialAmount, String name, BigDecimal budgetLimit, User user, Currency currency) {
-        if (wallet == null) {
-            synchronized (this) {
-                if (wallet == null) {
-                    Wallet singletonWallet = new Wallet();
-                    singletonWallet.setAmount(initialAmount);
-                    singletonWallet.setName(name);
-                    singletonWallet.setBudgetLimit(budgetLimit);
-                    singletonWallet.setClient(user);
-                    singletonWallet.setCurrency(currency);
-                    walletDao.persist(singletonWallet);
-                    wallet = singletonWallet;
-                }
-            }
-        }
-    }
-
-    public Wallet getSingletonWallet() {
-        if (wallet == null) {
-            synchronized (this) {
-                if (wallet == null) {
-                    wallet = walletDao.findSingletonWallet();
-                }
-            }
-        }
-        return wallet;
+    public Wallet createWallet(String name, User user) {
+        Wallet newWallet = new Wallet();
+        newWallet.setAmount(BigDecimal.valueOf(0));
+        newWallet.setName(name + "Wallet");
+        newWallet.setClient(user);
+        newWallet.setBudgetLimit(BigDecimal.valueOf(100000));
+        newWallet.setCurrency(Currency.CZK);
+        walletDao.persist(newWallet);
+        return newWallet;
     }
 
     public void updateWallet(Wallet wallet) {
@@ -77,7 +58,8 @@ public class WalletService {
         return walletDao.findByClientEmail(email);
     }
 
-    public BigDecimal getTotalBalance() {
+    public BigDecimal getTotalBalance(Long walletId) {
+        Wallet wallet = getWalletById(walletId);
         if (wallet != null) {
             return wallet.getAmount();
         }
@@ -105,11 +87,6 @@ public class WalletService {
         return wallet.getTransactions();
     }
 
-    public List<Transaction> getTransactions() {
-        Wallet wallet = getSingletonWallet();
-        return wallet.getTransactions();
-    }
-
     public Map<String, BigDecimal> calculateBudgetProgress(Long walletId) {
         Wallet wallet = getWalletById(walletId);
         BigDecimal totalIncome = transactionService.calculateTotalIncome(wallet);
@@ -125,7 +102,7 @@ public class WalletService {
     }
 
     public void checkBudgetLimit(Long walletId) {
-        Wallet wallet = getSingletonWallet();
+        Wallet wallet = getWalletById(walletId);
         BigDecimal totalExpenses = transactionService.calculateTotalExpenses(wallet);
 
         if (totalExpenses.compareTo(wallet.getBudgetLimit()) > 0) {
@@ -136,13 +113,13 @@ public class WalletService {
         }
     }
 
-    public void addGoal(String goal, BigDecimal money){
+    public void addGoal(String goal, BigDecimal money, Long walletId){
+        Wallet wallet = getWalletById(walletId);
         Map<String, BigDecimal> currentBudgetGoals = wallet.getBudgetGoal();
-        if (currentBudgetGoals == null) {
-            currentBudgetGoals = new HashMap<>();
+        if (!currentBudgetGoals.containsKey(goal)) {
+            currentBudgetGoals.put(goal, money);
+            wallet.setBudgetGoal(currentBudgetGoals);
         }
-        currentBudgetGoals.put(goal, money);
-        wallet.setBudgetGoal(currentBudgetGoals);
     }
 
     public void changeCurrency(Currency currency, Wallet wallet){
