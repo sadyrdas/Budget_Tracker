@@ -39,7 +39,7 @@ public class Wallet{
     @Column(nullable = false)
     private String name;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @MapKeyColumn(name = "goal")
     @Column(name = "money_goal")
     @CollectionTable(name = "goals", joinColumns = @JoinColumn(name = "wallet_id"))

@@ -1,6 +1,7 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.service;
 
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,12 +15,14 @@ import java.util.Objects;
 public class UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
+    private final WalletService walletService;
 
 
     @Autowired
-    public UserService(UserDao userDao, PasswordEncoder passwordEncoder) {
+    public UserService(UserDao userDao, PasswordEncoder passwordEncoder, WalletService walletService) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
+        this.walletService = walletService;
     }
 
     @Transactional
@@ -27,16 +30,19 @@ public class UserService {
         Objects.requireNonNull(email);
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
+        User exist = userDao.findByEmail(email);
 
         boolean result = false;
-        if (email.isEmpty() ||  username.isEmpty() || password.isEmpty()) {
+        if (exist != null && (email.isEmpty() ||  username.isEmpty() || password.isEmpty())) {
             return result;
         } else {
-            User user  = new User(email, username, password);
+            User user  = new User(email, username, password, null);
             user.encodePassword(passwordEncoder);
+            Wallet wallet = walletService.createWallet(username, user);
+            user.setWallet(wallet);
+
             userDao.persist(user);
             result = true;
-
         }
         return result;
 
