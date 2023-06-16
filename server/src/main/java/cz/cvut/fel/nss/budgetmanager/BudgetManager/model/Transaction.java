@@ -148,11 +148,15 @@ public class Transaction {
         }
 
 
-        public Builder money(BigDecimal money) {
+        public Builder money(BigDecimal money, TypeTransaction type) {
             if (money == null) {
                 throw new NotFoundException("Money can't be null");
             }
-            wallet.setAmount(wallet.getAmount().subtract(money));
+            if (type.getType().equals("INCOME")){
+                wallet.setAmount(wallet.getAmount().add(money));
+            } else{
+                wallet.setAmount(wallet.getAmount().subtract(money));
+            }
             this.money = money;
             return this;
         }

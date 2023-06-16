@@ -16,12 +16,12 @@ public class SendEmail {
     public static JsonNode sendEmail(String email) throws UnirestException{
         HttpResponse<JsonNode> request = Unirest.post("https://api.mailgun.net/v3/" + DOMAIN_NAME + "/messages")
                 .basicAuth("api", MailgunKey.API_KEY)
-                .queryString("from", "remelNotification@test.com")
-                .queryString("to", email)
-                .queryString("subject", "New room reservation")
-                .queryString("text", "Your room reservation is successful")
+                .queryString("from", "budgetManager@blob.te")
+                .queryString("to", "ramir.velikij@gmail.com")
+                .queryString("subject", "Budget limit is exceeded")
+                .queryString("text", "Your budget limit is exceeded")
                 .asJson();
-        log.info("Mailgun send email about reservation to email ->" + email);
+        log.info("Mailgun send email about exceeding of budget limit to email ->" + email);
         return request.getBody();
     }
 

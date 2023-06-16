@@ -129,7 +129,6 @@ public class TransactionService {
 //        performTransaction(existingTransaction); //проверка на перерасчет после изменения транзакции
     }
 
-    @Transactional(readOnly = true)
     public BigDecimal calculateTotalExpenses(Wallet wallet) {
         List<Transaction> transactions = wallet.getTransactions();
         BigDecimal totalExpenses = BigDecimal.ZERO;
