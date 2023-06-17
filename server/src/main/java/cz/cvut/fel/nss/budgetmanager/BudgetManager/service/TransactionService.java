@@ -8,6 +8,8 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.TypeTransaction;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionDao;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.WalletDao;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class TransactionService {
 
@@ -40,8 +43,10 @@ public class TransactionService {
     }
 
     @Transactional
+    @Cacheable(value = "trans", key = "#id")
     public Transaction findTransactionById(Long id) {
         Objects.requireNonNull(id);
+        log.info("Fetching the transaction {} from DB", id);
         return transactionDao.find(id);
     }
 
