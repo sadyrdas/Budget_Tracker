@@ -39,12 +39,12 @@ public class UserController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/getUserByEmail" , produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ExceptionHandler({NotFoundException.class})
-    public User getUser(@RequestParam("email") String userEmail) {
-        User u = userService.findUserByEmail(userEmail);
+    public User getUser(@PathVariable Long id) {
+        User u = userService.findUser(id);
         if (u == null){
-            throw new NotFoundException("User with that email" + userEmail + " doesn't exist");
+            throw new NotFoundException("User not found");
         }
         return u;
     }

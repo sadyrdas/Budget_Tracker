@@ -28,7 +28,7 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("admin", "admin");
         HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-        ResponseEntity<Void> response = restTemplate.exchange(server1Url + "/register", HttpMethod.POST, request, Void.class);
+        ResponseEntity<Void> response = restTemplate.exchange(server1Url + "/user/register", HttpMethod.POST, request, Void.class);
         System.out.println(response);
         return response;
     }

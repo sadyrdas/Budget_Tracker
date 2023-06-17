@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 
 @Service
-//@Transactional ??
+@Transactional
 public class UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
@@ -25,7 +25,6 @@ public class UserService {
         this.walletService = walletService;
     }
 
-    @Transactional
     public Boolean createUser(String email, String username, String password){
         Objects.requireNonNull(email);
         Objects.requireNonNull(username);
@@ -48,9 +47,8 @@ public class UserService {
 
     }
 
-    @Transactional //readonly ??
-    public User findUserByEmail(String userEmail) {
-        return userDao.findByEmail(userEmail);
+    public User findUser(Long id) {
+        return userDao.find(id);
     }
 
 }

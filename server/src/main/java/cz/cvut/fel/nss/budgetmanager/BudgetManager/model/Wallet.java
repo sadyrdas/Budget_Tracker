@@ -126,7 +126,7 @@ public class Wallet{
         return budgetGoal;
     }
 
-    public void setBudgetGoal(Map<String, BigDecimal> budgetGoal) {
-        this.budgetGoal = budgetGoal;
+    public void setBudgetGoal(String key, BigDecimal money) {
+        this.budgetGoal.put(key, money);
     }
 }

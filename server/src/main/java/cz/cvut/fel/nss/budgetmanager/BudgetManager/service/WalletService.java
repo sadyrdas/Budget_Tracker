@@ -118,7 +118,7 @@ public class WalletService {
         Map<String, BigDecimal> currentBudgetGoals = wallet.getBudgetGoal();
         if (!currentBudgetGoals.containsKey(goal)) {
             currentBudgetGoals.put(goal, money);
-            wallet.setBudgetGoal(currentBudgetGoals);
+            wallet.setBudgetGoal(goal, money);
         }
     }
 

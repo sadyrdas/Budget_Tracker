@@ -63,7 +63,8 @@ public class CategoryController {
         }
     }
 
-    @GetMapping ResponseEntity<List<Category>> getAllCategories() {
+    @GetMapping
+    public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
         if (categories.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
