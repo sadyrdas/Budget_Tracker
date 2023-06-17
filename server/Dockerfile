@@ -1,8 +1,9 @@
-FROM eclipse-temurin:17-jdk-jammy
+FROM openjdk:17-jdk-slim
 
+RUN apt-get update && apt-get install -y maven
 WORKDIR /app
 
 COPY . .
-RUN ./mvnw clean install
+RUN mvn clean install -DskipTests
 
-CMD ./mvnw spring-boot:run
+CMD mvn spring-boot:run
