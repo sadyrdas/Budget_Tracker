@@ -39,7 +39,7 @@ public class RestTemplateConfig {
         return restTemplate;
     }
 
-    public class BasicAuthorizationInterceptor implements ClientHttpRequestInterceptor {
+    public static class BasicAuthorizationInterceptor implements ClientHttpRequestInterceptor {
 
         private final String username;
         private final String password;
