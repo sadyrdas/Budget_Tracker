@@ -9,11 +9,15 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionDao;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.WalletDao;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -166,38 +170,37 @@ public class TransactionService {
         transactionDao.remove(transaction);
     }
 
-    public Resource exportTransactions() {
+
+    public Resource exportTransactionsToTxtFile() throws IOException {
+        String filePath = "server/src/main/resources/transactions.txt";
         List<Transaction> transactions = transactionDao.findAll();
 
-        // Create a StringBuilder to build the CSV content
-        StringBuilder csvContent = new StringBuilder();
-        csvContent.append("Date,Description,Category,Amount\n"); // CSV header
-
-        for (Transaction transaction : transactions) {
-            csvContent.append(formatCsvField(transaction.getDate().toString()))
-                    .append(",")
-                    .append(formatCsvField(transaction.getDescription()))
-                    .append(",")
-                    .append(formatCsvField(transaction.getCategory().toString()))
-                    .append(",")
-                    .append(formatCsvField(transaction.getMoney().toString()))
-                    .append("\n");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (Transaction transaction : transactions) {
+                writer.write("Date: " + formatTextField(transaction.getDate().toString()));
+                writer.newLine();
+                writer.write("Description: " + formatTextField(transaction.getDescription()));
+                writer.newLine();
+                writer.write("Category: " + formatTextField(transaction.getCategory().getName()));
+                writer.newLine();
+                writer.write("Amount: " + formatTextField(transaction.getMoney().toString()));
+                writer.newLine();
+                writer.newLine();
+            }
         }
 
-        // Convert the CSV content to a byte array
-        byte[] csvBytes = csvContent.toString().getBytes(StandardCharsets.UTF_8);
-
-        // Create a ByteArrayResource from the byte array
-        ByteArrayResource resource = new ByteArrayResource(csvBytes);
-
-        return resource;
+        // Create a FileSystemResource from the generated text file
+        return new FileSystemResource(filePath);
     }
 
-    private String formatCsvField(String field) {
-        // Escape double quotes and handle null values
+    private String formatTextField(String field) {
+        // Handle null values
         if (field == null) {
             return "";
         }
-        return "\"" + field.replace("\"", "\"\"") + "\"";
+        // Add any additional formatting specific to the text file format
+        // For example, you might want to replace special characters or adjust the formatting rules.
+        return field;
     }
+
 }

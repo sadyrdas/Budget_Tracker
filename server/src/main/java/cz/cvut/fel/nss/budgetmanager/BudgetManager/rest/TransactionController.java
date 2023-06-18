@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.Resource;
 
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -118,11 +119,16 @@ public class TransactionController {
 
     @GetMapping("/export")
     public ResponseEntity<Resource> exportTransaction() {
-        Resource fileResource = transactionService.exportTransactions();
+        try {
+            Resource fileResource = transactionService.exportTransactionsToTxtFile();
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"transactions.csv\"")
-                .contentType(MediaType.parseMediaType("text/csv"))
-                .body(fileResource);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"transactions.txt\"")
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body(fileResource);
+        } catch (IOException e) {
+            // Handle the exception accordingly
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
