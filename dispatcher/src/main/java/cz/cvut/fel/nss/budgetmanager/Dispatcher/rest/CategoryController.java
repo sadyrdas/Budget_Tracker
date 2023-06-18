@@ -18,14 +18,11 @@ public class CategoryController {
 
     @Autowired
     private RestTemplate restTemplate;
-
-    private final String server2Url = "http://localhost:8082/rest/categories";
+    private final String server2Url = "http://localhost:8081/rest/categories";
 
     @PostMapping
     public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("admin@test.test", "admin");
-        HttpEntity<Category> request = new HttpEntity<>(category, headers);
+        HttpEntity<Category> request = new HttpEntity<>(category);
         return restTemplate.exchange(server2Url, HttpMethod.POST, request, Category.class);
     }
 
@@ -34,28 +31,21 @@ public class CategoryController {
         String url = server2Url + "/{id}";
         HttpEntity<Category> requestEntity = new HttpEntity<>(updatedCategory);
 
-        ResponseEntity<Category> response = restTemplate.exchange(url,
+        return restTemplate.exchange(url,
                 HttpMethod.PUT,
                 requestEntity,
                 Category.class,
                 id);
-
-        System.out.println(response);
-        return response;
     }
-
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         String url = server2Url + "/{id}";
-        ResponseEntity<Void> response = restTemplate.exchange(url,
+        return restTemplate.exchange(url,
                 HttpMethod.DELETE,
                 null,
                 Void.class,
                 id);
-        System.out.println(response);
-        return response;
     }
 
     @GetMapping("/{id}")

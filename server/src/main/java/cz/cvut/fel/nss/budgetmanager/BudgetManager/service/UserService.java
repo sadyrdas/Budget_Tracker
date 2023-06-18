@@ -35,7 +35,7 @@ public class UserService {
         if (exist != null && (email.isEmpty() ||  username.isEmpty() || password.isEmpty())) {
             return result;
         } else {
-            User user  = new User(email, username, password, null);
+            User user  = new User(email, password, username, null);
             user.encodePassword(passwordEncoder);
             Wallet wallet = walletService.createWallet(username, user);
             user.setWallet(wallet);

@@ -14,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("rest/user")
 public class UserController {
     private final RestTemplate restTemplate;
-
     private final String server1Url;
 
     @Autowired
@@ -26,9 +25,9 @@ public class UserController {
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> register(@RequestBody UserDTO userDTO) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("admin", "admin");
-        HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-        ResponseEntity<Void> response = restTemplate.exchange(server1Url + "/user/register", HttpMethod.POST, request, Void.class);
+        headers.setBasicAuth("admin@test.test", "admin");
+        HttpEntity<UserDTO> request = new HttpEntity<>(userDTO);
+        ResponseEntity<Void> response = restTemplate.exchange(server1Url + "/register", HttpMethod.POST, request, Void.class);
         System.out.println(response);
         return response;
     }

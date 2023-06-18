@@ -18,7 +18,7 @@ import java.util.List;
 @Configuration
 public class RestTemplateConfig {
 
-    @Value("${spring.security.user.name}")
+    @Value("${spring.security.user.name}@test.test")
     private String username;
 
     @Value("${spring.security.user.password}")
