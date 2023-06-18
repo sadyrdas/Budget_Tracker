@@ -46,7 +46,7 @@ public class Transaction implements Serializable {
     @JoinColumn(name = "wallet", referencedColumnName = "wallet_id")
     private Wallet wallet;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "category", referencedColumnName = "name")
     private Category category;
 

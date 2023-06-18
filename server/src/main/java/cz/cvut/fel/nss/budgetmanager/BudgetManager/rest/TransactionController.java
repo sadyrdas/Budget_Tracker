@@ -88,9 +88,9 @@ public class TransactionController {
         transaction.setTypeTransaction(updatedTransaction.getTypeTransaction());
         transaction.setDate(updatedTransaction.getDate());
 
-        transactionService.update(transaction);
         ModelMapper modelMapper = new ModelMapper();
-        TransactionResponseDTO transactionResponseDTO = modelMapper.map(transaction, TransactionResponseDTO.class);
+        TransactionResponseDTO transactionResponseDTO = modelMapper.map(transactionService.update(transaction),
+                TransactionResponseDTO.class);
         return ResponseEntity.ok(transactionResponseDTO);
     }
 
