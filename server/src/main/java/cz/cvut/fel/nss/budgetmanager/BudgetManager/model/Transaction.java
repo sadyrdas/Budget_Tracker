@@ -1,9 +1,12 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hazelcast.internal.serialization.SerializableByConvention;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.exceptions.NotFoundException;
 import jakarta.persistence.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -12,7 +15,11 @@ import java.time.LocalDateTime;
 @NamedQueries({
         @NamedQuery(name = "findByName", query = "SELECT t FROM Transaction t where t.description = :name ")
 })
-public class Transaction {
+public class Transaction implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "transactions_id")
@@ -39,7 +46,7 @@ public class Transaction {
     @JoinColumn(name = "wallet", referencedColumnName = "wallet_id")
     private Wallet wallet;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "category", referencedColumnName = "name")
     private Category category;
 

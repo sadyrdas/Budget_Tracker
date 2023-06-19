@@ -8,6 +8,10 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.TypeTransaction;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionDao;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.WalletDao;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -26,6 +30,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class TransactionService {
 
@@ -44,8 +49,10 @@ public class TransactionService {
     }
 
     @Transactional
+    @Cacheable(value = "trans", key = "#id")
     public Transaction findTransactionById(Long id) {
         Objects.requireNonNull(id);
+        log.info("Fetching the transaction {} from DB", id);
         return transactionDao.find(id);
     }
 
@@ -95,9 +102,12 @@ public class TransactionService {
     }
 
     @Transactional
-    public void update(Transaction transaction) {
+    @CachePut(value = "trans", key = "#transaction.getTransId()")
+    public Transaction update(Transaction transaction) {
         Objects.requireNonNull(transaction);
+        log.info("Updated the transaction with id {}", transaction.getTransId());
         transactionDao.update(transaction);
+        return transaction;
     }
 
     @Transactional
@@ -161,6 +171,7 @@ public class TransactionService {
     }
 
     @Transactional
+    @CacheEvict(value = "trans", key = "#id")
     public void deleteTransaction(Long id) {
         Transaction transaction = transactionDao.find(id);
         if (transaction == null) {

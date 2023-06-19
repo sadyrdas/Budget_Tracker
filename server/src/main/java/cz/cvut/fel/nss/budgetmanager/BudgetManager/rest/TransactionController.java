@@ -5,6 +5,7 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.exceptions.NotFoundException;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Category;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Transaction;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.SecurityUtils;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.CategoryService;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.TransactionService;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.WalletService;
@@ -46,7 +47,6 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<TransactionResponseDTO> getTransactionById(@PathVariable Long id) {
         Transaction transaction = transactionService.findTransactionById(id);
         if (transaction == null) {
@@ -59,9 +59,9 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.OK).body(transactionResponseDTO);
     }
 
-    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TransactionResponseDTO> createTransaction(@PathVariable Long id,  @RequestBody Transaction transaction) {
-        Wallet wallet = walletService.getWalletById(id);
+    @PostMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TransactionResponseDTO> createTransaction(@RequestBody Transaction transaction) {
+        Wallet wallet = SecurityUtils.getCurrentUser().getWallet();
         Category category = categoryService.getCategoryByName(transaction.getCategory().getName());
         ModelMapper modelMapper = new ModelMapper();
         Transaction.Builder builder = new Transaction.Builder();
@@ -78,7 +78,6 @@ public class TransactionController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<TransactionResponseDTO> updateTransaction(@PathVariable Long id, @RequestBody Transaction updatedTransaction) {
         Transaction transaction = transactionService.findTransactionById(id);
         if (transaction == null) {
@@ -90,14 +89,13 @@ public class TransactionController {
         transaction.setTypeTransaction(updatedTransaction.getTypeTransaction());
         transaction.setDate(updatedTransaction.getDate());
 
-        transactionService.update(transaction);
         ModelMapper modelMapper = new ModelMapper();
-        TransactionResponseDTO transactionResponseDTO = modelMapper.map(transaction, TransactionResponseDTO.class);
+        TransactionResponseDTO transactionResponseDTO = modelMapper.map(transactionService.update(transaction),
+                TransactionResponseDTO.class);
         return ResponseEntity.ok(transactionResponseDTO);
     }
 
     @DeleteMapping("/{id}")
-    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         Transaction transaction = transactionService.findTransactionById(id);
         if (transaction == null) {
