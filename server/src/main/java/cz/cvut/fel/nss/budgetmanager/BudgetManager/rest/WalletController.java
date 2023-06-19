@@ -1,14 +1,11 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.rest;
 
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.UserDTO;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.WalletGoalResponseDTO;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.WalletResponseDTO;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.exceptions.NotFoundException;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Currency;
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.SecurityUtils;
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.UserService;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.util.SecurityUtils;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.WalletService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

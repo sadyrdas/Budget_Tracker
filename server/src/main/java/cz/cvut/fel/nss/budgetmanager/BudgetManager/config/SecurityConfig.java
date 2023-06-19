@@ -1,10 +1,13 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.config;
 
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.util.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,9 +40,11 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .cors().and()
-                .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().authenticated()
                 )
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
