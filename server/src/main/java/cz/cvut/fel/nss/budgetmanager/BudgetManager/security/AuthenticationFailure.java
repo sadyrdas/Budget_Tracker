@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 
+/**
+ * Custom implementation of the AuthenticationFailureHandler interface.
+ * Handles authentication failure events by returning an error response with the appropriate status and message.
+ */
 @Service
 public class AuthenticationFailure implements AuthenticationFailureHandler {
 

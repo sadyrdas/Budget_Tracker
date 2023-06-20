@@ -10,14 +10,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
+/**
+ * Service class for managing user-related operations.
+ */
 @Service
-//@Transactional ??
 public class UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
     private final WalletService walletService;
 
-
+    /**
+     * Constructs a new UserService with the given dependencies.
+     *
+     * @param userDao         The UserDao to interact with the user data.
+     * @param passwordEncoder The PasswordEncoder for encoding user passwords.
+     * @param walletService   The WalletService for managing user wallets.
+     */
     @Autowired
     public UserService(UserDao userDao, PasswordEncoder passwordEncoder, WalletService walletService) {
         this.userDao = userDao;
@@ -25,6 +33,14 @@ public class UserService {
         this.walletService = walletService;
     }
 
+    /**
+     * Creates a new user with the given email, username, and password.
+     *
+     * @param email    The email of the user.
+     * @param username The username of the user.
+     * @param password The password of the user.
+     * @return True if the user is created successfully, false otherwise.
+     */
     @Transactional
     public Boolean createUser(String email, String username, String password){
         Objects.requireNonNull(email);
@@ -48,6 +64,12 @@ public class UserService {
 
     }
 
+    /**
+     * Retrieves a user by their email.
+     *
+     * @param userEmail The email of the user.
+     * @return The User object if found, null otherwise.
+     */
     @Transactional //readonly ??
     public User findUserByEmail(String userEmail) {
         return userDao.findByEmail(userEmail);

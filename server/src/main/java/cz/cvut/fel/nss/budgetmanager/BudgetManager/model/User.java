@@ -6,6 +6,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Represents a user entity in the system.
+ */
 @Entity
 @Table(name = "client")
 @NamedQueries({
@@ -37,6 +40,14 @@ public class User implements Serializable {
     @OneToOne(mappedBy = "client")
     private Wallet wallet;
 
+    /**
+     * Constructs a new User object with the specified email, password, username, and wallet.
+     *
+     * @param email    The email of the user.
+     * @param password The password of the user.
+     * @param username The username of the user.
+     * @param wallet   The wallet associated with the user.
+     */
     public User(String email, String password, String username, Wallet wallet) {
         this.email = email;
         this.password = password;
@@ -47,16 +58,17 @@ public class User implements Serializable {
     public User() {
     }
 
+    /**
+     * Encodes the password using the provided password encoder.
+     *
+     * @param encoder The password encoder.
+     */
     public void encodePassword(PasswordEncoder encoder) {
         this.password = encoder.encode(password);
     }
 
     public Long getClientId() {
         return clientId;
-    }
-
-    public void setClientId(Long clientId) {
-        this.clientId = clientId;
     }
 
     public String getEmail() {
@@ -71,16 +83,8 @@ public class User implements Serializable {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public Wallet getWallet() {

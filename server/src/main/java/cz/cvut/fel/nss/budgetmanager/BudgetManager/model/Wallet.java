@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Represents a wallet entity in the system.
+ */
 @Entity
 @Table(name = "wallet")
 @NamedQueries({
@@ -60,10 +63,6 @@ public class Wallet implements Serializable {
 
     public Long getWalletId() {
         return walletId;
-    }
-
-    public void setWalletId(Long walletId) {
-        this.walletId = walletId;
     }
 
     public BigDecimal getAmount() {
@@ -116,10 +115,6 @@ public class Wallet implements Serializable {
 
     public List<Transaction> getTransactions() {
         return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
     }
 
     public void addTransaction(Transaction transaction){

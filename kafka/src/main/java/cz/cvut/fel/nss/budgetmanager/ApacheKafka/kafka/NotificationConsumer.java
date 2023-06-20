@@ -7,10 +7,18 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service class that consumes messages from the "SENDING_EMAIL" Kafka topic and sends notifications.
+ */
 @Service
 @Slf4j
 public class NotificationConsumer {
 
+    /**
+     * Kafka listener method for consuming email messages.
+     *
+     * @param email The email message payload.
+     */
     @KafkaListener(topics = "SENDING_EMAIL", containerFactory = "mailNotificationListener")
     public void listener(@Payload String email){
         try {

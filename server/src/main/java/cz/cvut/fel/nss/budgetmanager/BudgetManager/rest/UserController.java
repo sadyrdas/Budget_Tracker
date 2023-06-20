@@ -14,6 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for managing user-related operations.
+ */
 @RestController
 @RequestMapping("rest/user")
 public class UserController {
@@ -21,11 +24,23 @@ public class UserController {
 
     private final static Logger LOG = LoggerFactory.getLogger(UserController.class);
 
+    /**
+     * Constructs a new UserController with the provided UserService.
+     *
+     * @param userService The UserService to be used.
+     */
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * Registers a new user.
+     *
+     * @param user The user object containing the registration details.
+     * @return The ResponseEntity with the appropriate status and headers.
+     * @throws UserAlreadyExists if a user with the same email already exists.
+     */
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ExceptionHandler({UserAlreadyExists.class})
     public ResponseEntity<Void> register(@RequestBody User user) {
@@ -39,6 +54,13 @@ public class UserController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    /**
+     * Retrieves a user by email.
+     *
+     * @param userEmail The email of the user to retrieve.
+     * @return The User object with the specified email.
+     * @throws NotFoundException if a user with the specified email is not found.
+     */
     @GetMapping(value = "/getUserByEmail" , produces = MediaType.APPLICATION_JSON_VALUE)
     @ExceptionHandler({NotFoundException.class})
     public User getUser(@RequestParam("email") String userEmail) {
@@ -48,5 +70,4 @@ public class UserController {
         }
         return u;
     }
-
 }

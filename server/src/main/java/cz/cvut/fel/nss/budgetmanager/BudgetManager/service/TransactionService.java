@@ -37,17 +37,34 @@ public class TransactionService {
     private final TransactionDao transactionDao;
     private final WalletDao walletDao;
 
+    /**
+     * Constructs a new TransactionService with the provided TransactionDao and WalletDao.
+     *
+     * @param transactionDao The TransactionDao implementation used for data access.
+     * @param walletDao      The WalletDao implementation used for data access.
+     */
     @Autowired
     public TransactionService(TransactionDao transactionDao, WalletDao walletDao) {
         this.transactionDao = transactionDao;
         this.walletDao = walletDao;
     }
 
+    /**
+     * Retrieves all transactions.
+     *
+     * @return A list of all transactions.
+     */
     @Transactional
     public List<Transaction> findAllTransactions(){
         return transactionDao.findAll();
     }
 
+    /**
+     * Retrieves a transaction by its ID.
+     *
+     * @param id The ID of the transaction.
+     * @return The transaction with the specified ID, or null if not found.
+     */
     @Transactional
     @Cacheable(value = "trans", key = "#id")
     public Transaction findTransactionById(Long id) {
@@ -56,21 +73,48 @@ public class TransactionService {
         return transactionDao.find(id);
     }
 
+    /**
+     * Retrieves transactions by category.
+     *
+     * @param category The category of the transactions.
+     * @return A list of transactions with the specified category.
+     */
     @Transactional
     public List<Transaction>  findTransactionByCategory(Category category){
         return transactionDao.findByCategory(category);
     }
 
+    /**
+     * Retrieves transactions by amount.
+     *
+     * @param money The amount of the transactions.
+     * @return A list of transactions with the specified amount.
+     */
     @Transactional
     public List<Transaction>  findTransactionsByAmount(BigDecimal money){
         return transactionDao.findByAmount(money);
     }
 
+    /**
+     * Retrieves transactions by description.
+     *
+     * @param description The description of the transactions.
+     * @return A list of transactions with the specified description.
+     */
     @Transactional
     public List<Transaction> findTransactionsByMessage(String description){
         return transactionDao.findByDescription(description);
     }
 
+    /**
+     * Searches for transactions based on the provided criteria.
+     *
+     * @param category    The category of the transactions (optional).
+     * @param date        The date of the transactions (optional).
+     * @param description The description of the transactions (optional).
+     * @param amount      The amount of the transactions (optional).
+     * @return A list of transactions that match the specified criteria.
+     */
     @Transactional(readOnly = true)
     public List<Transaction> searchTransactions(Category category, LocalDate date, String description, BigDecimal amount) {
         // Perform the search based on the provided criteria
@@ -95,12 +139,23 @@ public class TransactionService {
         }
     }
 
+    /**
+     * Persists a new transaction.
+     *
+     * @param transaction The transaction to persist.
+     */
     @Transactional
     public void persist(Transaction transaction) {
         Objects.requireNonNull(transaction);
         transactionDao.persist(transaction);
     }
 
+    /**
+     * Updates a transaction.
+     *
+     * @param transaction The transaction to update.
+     * @return The updated transaction.
+     */
     @Transactional
     @CachePut(value = "trans", key = "#transaction.getTransId()")
     public Transaction update(Transaction transaction) {
@@ -110,13 +165,17 @@ public class TransactionService {
         return transaction;
     }
 
+    /**
+     * Performs a transaction, updating the wallet's amount and type.
+     *
+     * @param transaction The transaction to perform.
+     */
     @Transactional
     public void performTransaction(Transaction transaction) {
         Wallet wallet = transaction.getWallet();
         wallet.setAmount(wallet.getAmount().add(transaction.getMoney()));
         walletDao.update(wallet);
 
-        // TODO not sure about checking what type we wanna use
         if (transaction.getMoney().compareTo(BigDecimal.ZERO) >= 0) {
             transaction.setTypeTransaction(TypeTransaction.INCOME);
         } else {
@@ -125,6 +184,11 @@ public class TransactionService {
         transactionDao.update(transaction);
     }
 
+    /**
+     * Edits a transaction by updating its fields.
+     *
+     * @param transaction The updated transaction.
+     */
     @Transactional
     public void editTransaction(Transaction transaction) {
         Transaction existingTransaction = transactionDao.find(transaction.getTransId());
@@ -143,6 +207,12 @@ public class TransactionService {
 //        performTransaction(existingTransaction); //проверка на перерасчет после изменения транзакции
     }
 
+    /**
+     * Calculates the total expenses for a wallet based on its transactions.
+     *
+     * @param wallet The wallet.
+     * @return The total expenses for the wallet.
+     */
     public BigDecimal calculateTotalExpenses(Wallet wallet) {
         List<Transaction> transactions = wallet.getTransactions();
         BigDecimal totalExpenses = BigDecimal.ZERO;
@@ -155,6 +225,12 @@ public class TransactionService {
         return totalExpenses;
     }
 
+    /**
+     * Calculates the total income for a wallet based on its transactions.
+     *
+     * @param wallet The wallet.
+     * @return The total income for the wallet.
+     */
     @Transactional(readOnly = true)
     public BigDecimal calculateTotalIncome(Wallet wallet) {
         BigDecimal totalIncome = BigDecimal.ZERO;
@@ -169,6 +245,11 @@ public class TransactionService {
         return totalIncome;
     }
 
+    /**
+     * Deletes a transaction by its ID.
+     *
+     * @param id The ID of the transaction to delete.
+     */
     @Transactional
     @CacheEvict(value = "trans", key = "#id")
     public void deleteTransaction(Long id) {
@@ -180,7 +261,12 @@ public class TransactionService {
         transactionDao.remove(transaction);
     }
 
-
+    /**
+     * Exports transactions to a text file.
+     *
+     * @return A Resource representing the exported text file.
+     * @throws IOException If an I/O error occurs while exporting the transactions.
+     */
     public Resource exportTransactionsToTxtFile() throws IOException {
         String filePath = "server/src/main/resources/transactions.txt";
         List<Transaction> transactions = transactionDao.findAll();
@@ -203,6 +289,12 @@ public class TransactionService {
         return new FileSystemResource(filePath);
     }
 
+    /**
+     * Formats a text field for the exported transactions file.
+     *
+     * @param field The text field to format.
+     * @return The formatted text field.
+     */
     private String formatTextField(String field) {
         // Handle null values
         if (field == null) {

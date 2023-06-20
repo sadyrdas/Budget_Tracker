@@ -1,5 +1,8 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
+/**
+ * Represents a currency type.
+ */
 public enum Currency {
     EUR("EUR"),
     CZK("CZK"),

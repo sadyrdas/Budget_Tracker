@@ -27,6 +27,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * REST controller for managing transactions.
+ */
 @RestController
 @RequestMapping("rest/transaction")
 public class TransactionController {
@@ -35,6 +38,14 @@ public class TransactionController {
     private final CategoryService categoryService;
     private final TransactionRepository transactionRepository;
 
+    /**
+     * Constructs a new TransactionController with the provided services and repository.
+     *
+     * @param transactionService     The TransactionService to be used.
+     * @param walletService          The WalletService to be used.
+     * @param categoryService        The CategoryService to be used.
+     * @param transactionRepository  The TransactionRepository to be used.
+     */
     @Autowired
     public TransactionController(TransactionService transactionService, WalletService walletService,
                                  CategoryService categoryService, TransactionRepository transactionRepository){
@@ -44,6 +55,11 @@ public class TransactionController {
         this.transactionRepository = transactionRepository;
     }
 
+    /**
+     * Retrieves all transactions.
+     *
+     * @return The list of TransactionResponseDTO objects.
+     */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TransactionResponseDTO> getAllTransactions() {
         List<Transaction> list = transactionService.findAllTransactions();
@@ -51,6 +67,14 @@ public class TransactionController {
         return list.stream().map(transaction -> modelMapper.map(transaction, TransactionResponseDTO.class)).toList();
     }
 
+
+    /**
+     * Retrieves a transaction by its ID.
+     *
+     * @param id The ID of the transaction.
+     * @return The ResponseEntity containing the retrieved TransactionResponseDTO object and the appropriate status.
+     * @throws NotFoundException if the transaction with the specified ID is not found.
+     */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionResponseDTO> getTransactionById(@PathVariable Long id) {
         Transaction transaction = transactionService.findTransactionById(id);
@@ -60,10 +84,15 @@ public class TransactionController {
         ModelMapper modelMapper = new ModelMapper();
         TransactionResponseDTO transactionResponseDTO = modelMapper.map(transaction, TransactionResponseDTO.class);
 
-
         return ResponseEntity.status(HttpStatus.OK).body(transactionResponseDTO);
     }
 
+    /**
+     * Creates a new transaction.
+     *
+     * @param transaction The transaction to create.
+     * @return The ResponseEntity containing the created TransactionResponseDTO object and the appropriate status.
+     */
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionResponseDTO> createTransaction(@RequestBody Transaction transaction) {
         Wallet wallet = SecurityUtils.getCurrentUser().getWallet();
@@ -84,6 +113,14 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponseDTO);
     }
 
+    /**
+     * Updates an existing transaction.
+     *
+     * @param id                The ID of the transaction to update.
+     * @param updatedTransaction The updated transaction object.
+     * @return The ResponseEntity containing the updated TransactionResponseDTO object and the appropriate status.
+     * @throws NotFoundException if the transaction with the specified ID is not found.
+     */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionResponseDTO> updateTransaction(@PathVariable Long id, @RequestBody Transaction updatedTransaction) {
         Transaction transaction = transactionService.findTransactionById(id);
@@ -102,6 +139,13 @@ public class TransactionController {
         return ResponseEntity.ok(transactionResponseDTO);
     }
 
+    /**
+     * Deletes a transaction.
+     *
+     * @param id The ID of the transaction to delete.
+     * @return The ResponseEntity with no content and the appropriate status.
+     * @throws NotFoundException if the transaction with the specified ID is not found.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         Transaction transaction = transactionService.findTransactionById(id);
@@ -112,6 +156,15 @@ public class TransactionController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Searches for transactions based on the specified parameters.
+     *
+     * @param category    The category of the transactions (optional).
+     * @param date        The date of the transactions (optional).
+     * @param description The description of the transactions (optional).
+     * @param amount      The amount of the transactions (optional).
+     * @return The list of TransactionResponseDTO objects matching the search criteria.
+     */
     @GetMapping("/search")
     public List<TransactionResponseDTO> searchTransaction(@RequestParam(required = false) Category category,
                                                @RequestParam(required = false) LocalDate date,
@@ -122,6 +175,11 @@ public class TransactionController {
         return list.stream().map(transaction -> modelMapper.map(transaction, TransactionResponseDTO.class)).toList();
     }
 
+    /**
+     * Exports transactions to a text file.
+     *
+     * @return The ResponseEntity containing the exported file resource and the appropriate status.
+     */
     @GetMapping("/export")
     public ResponseEntity<Resource> exportTransaction() {
         try {
@@ -137,8 +195,14 @@ public class TransactionController {
         }
     }
 
-//    @GetMapping(value = "/findByDescription/{description}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public List<Transaction> findByDescription(@PathVariable String description) {
-//        return transactionRepository.findTransactionByDescription(description);
-//    }
+    /**
+     * Retrieves transactions by description.
+     *
+     * @param description The description of the transactions.
+     * @return The list of Transaction objects matching the description.
+     */
+    @GetMapping(value = "/findByDescription/{description}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Transaction> findByDescription(@PathVariable String description) {
+        return transactionRepository.findTransactionByDescription(description);
+    }
 }

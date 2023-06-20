@@ -17,7 +17,6 @@ public class TransactionDao extends BaseDao<Transaction>{
      *
      * the class type of the entity managed by this BaseDao.
      */
-
     public TransactionDao() {
         super(Transaction.class);
     }
