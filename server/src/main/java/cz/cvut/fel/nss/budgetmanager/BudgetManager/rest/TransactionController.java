@@ -5,6 +5,8 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.exceptions.NotFoundException;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Category;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Transaction;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
+//import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionRepository;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionRepository;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.SecurityUtils;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.CategoryService;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.TransactionService;
@@ -31,12 +33,15 @@ public class TransactionController {
     private final TransactionService transactionService;
     private final WalletService walletService;
     private final CategoryService categoryService;
+    private final TransactionRepository transactionRepository;
 
     @Autowired
-    public TransactionController(TransactionService transactionService, WalletService walletService, CategoryService categoryService){
+    public TransactionController(TransactionService transactionService, WalletService walletService,
+                                 CategoryService categoryService, TransactionRepository transactionRepository){
         this.transactionService = transactionService;
         this.walletService = walletService;
         this.categoryService = categoryService;
+        this.transactionRepository = transactionRepository;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -129,4 +134,9 @@ public class TransactionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+//    @GetMapping(value = "/findByDescription/{description}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public List<Transaction> findByDescription(@PathVariable String description) {
+//        return transactionRepository.findTransactionByDescription(description);
+//    }
 }
