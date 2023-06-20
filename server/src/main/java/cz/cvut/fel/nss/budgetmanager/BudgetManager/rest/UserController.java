@@ -77,6 +77,6 @@ public class UserController {
 
         return new ResponseEntity<>(
                 new AuthenticationResponse(
-                        TokenValidatorService.generateHash(request.getEmail(), futureExpireTokenTime), ""), HttpStatus.OK);
+                        request.getEmail(), ""), HttpStatus.OK);
     }
 }

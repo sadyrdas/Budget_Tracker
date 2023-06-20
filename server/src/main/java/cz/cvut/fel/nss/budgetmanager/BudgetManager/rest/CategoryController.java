@@ -27,7 +27,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    @ExceptionHandler({NotFoundException.class})
+//    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory) {
         Category category = categoryService.getCategory(id);
 
@@ -41,7 +41,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    @ExceptionHandler({NotFoundException.class})
+//    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         Category category = categoryService.getCategory(id);
         if (category == null) {

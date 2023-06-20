@@ -5,6 +5,7 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.model.Authentication
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.model.BudgetUserDetails;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.util.SecurityUtils;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.security.BudgetUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,19 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class DefaultAuthenticationProvider implements AuthenticationProvider {
+
     private final BudgetUserDetailsService budgetUserDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationService authenticationService;
-
-    @Autowired
-    public DefaultAuthenticationProvider(BudgetUserDetailsService budgetUserDetailsService,
-                                         PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
-        this.budgetUserDetailsService = budgetUserDetailsService;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationService = authenticationService;
-    }
-
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

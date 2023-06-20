@@ -19,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +27,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenValidatorService tokenValidatorService;
     private final BudgetUserDetailsService budgetUserDetailsService;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationService authenticationService;
 
     @Override
@@ -41,26 +41,12 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         String token = request.getHeader("Authorization");
 
-        String[] tokenParts = token.split("\\|");
+        String hash = token;
 
-        if (tokenParts.length != 3) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        if (!hash.isEmpty() && tokenValidatorService.validateToken(hash)) {
+            final BudgetUserDetails budgetUserDetails = (BudgetUserDetails) budgetUserDetailsService.loadUserByUsername(hash);
 
-        String hash = tokenParts[0];
-        String email = tokenParts[1];
-        LocalDateTime expirationDate = LocalDateTime.parse(tokenParts[2]);
-
-        if (!hash.isEmpty() && !email.isEmpty() && tokenValidatorService.validateToken(hash, email, expirationDate)) {
-            final BudgetUserDetails budgetUserDetails = (BudgetUserDetails) budgetUserDetailsService.loadUserByUsername(email);
-            final String password = budgetUserDetails.getPassword();
-
-            if (!passwordEncoder.matches(password, budgetUserDetails.getPassword())) {
-                throw new BadCredentialsException("Provided credentials do not matches!");
-            }
-
-            authenticationService.authenticate(email);
+            authenticationService.authenticate(hash);
             SecurityUtils.setCurrentUser(budgetUserDetails);
             filterChain.doFilter(request, response);
 
