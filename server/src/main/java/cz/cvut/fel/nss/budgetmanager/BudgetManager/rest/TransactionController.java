@@ -5,26 +5,23 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.exceptions.NotFoundException;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Category;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Transaction;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
-//import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionRepository;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionRepository;
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.SecurityUtils;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.util.SecurityUtils;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.CategoryService;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.TransactionService;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.WalletService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.core.io.Resource;
-
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**

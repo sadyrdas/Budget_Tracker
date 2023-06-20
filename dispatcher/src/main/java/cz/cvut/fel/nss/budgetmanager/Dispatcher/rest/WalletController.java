@@ -4,6 +4,7 @@ import cz.cvut.fel.nss.budgetmanager.Dispatcher.dto.WalletGoalResponseDTO;
 import cz.cvut.fel.nss.budgetmanager.Dispatcher.dto.WalletResponseDTO;
 import cz.cvut.fel.nss.budgetmanager.Dispatcher.model.Currency;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -13,38 +14,36 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("rest/wallet")
 public class WalletController {
-    @Autowired
-    RestTemplate restTemplate;
 
-    private String server1Url = "http://server:8081/rest/wallet";
+    private final RestTemplate restTemplate;
+    private final String serverUrl;
+
+    @Autowired
+    public WalletController(RestTemplate restTemplate, @Value("${server1.url}") String serverUrl) {
+        this.restTemplate = restTemplate;
+        this.serverUrl = serverUrl;
+    }
 
     @PutMapping(value = "/money", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> addMoneyToWallet(@RequestBody BigDecimal amount){
         HttpEntity<BigDecimal> request = new HttpEntity<>(amount);
-        ResponseEntity<Void> response = restTemplate.exchange(server1Url + "/money",HttpMethod.PUT, request, Void.class);
-        return response;
+        return restTemplate.exchange(serverUrl + "/money",HttpMethod.PUT, request, Void.class);
     }
 
     @PostMapping(value = "/goal", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WalletGoalResponseDTO> addGoal(@RequestBody WalletGoalResponseDTO walletGoalResponseDTO) {
         HttpEntity<WalletGoalResponseDTO> request = new HttpEntity<>(walletGoalResponseDTO);
-        ResponseEntity<WalletGoalResponseDTO> response = restTemplate.exchange(server1Url + "/goal", HttpMethod.POST, request, WalletGoalResponseDTO.class);
-        System.out.println(response);
-        return response;
+        return restTemplate.exchange(serverUrl + "/goal", HttpMethod.POST, request, WalletGoalResponseDTO.class);
     }
 
     @PutMapping(value = "/currency")
     public ResponseEntity<Void> changeCurrency(@RequestParam("currency") Currency currency){
         HttpEntity<Currency> request = new HttpEntity<>(currency);
-        ResponseEntity<Void> response = restTemplate.exchange(server1Url + "/currency?currency={currency}", HttpMethod.PUT, request, Void.class, currency);
-        System.out.println(response);
-        return response;
+        return restTemplate.exchange(serverUrl + "/currency?currency={currency}", HttpMethod.PUT, request, Void.class, currency);
     }
 
     @GetMapping(value = "/myWallet")
     public ResponseEntity<WalletResponseDTO> getWallet(){
-        ResponseEntity<WalletResponseDTO> response = restTemplate.getForEntity(server1Url + "/myWallet", WalletResponseDTO.class);
-        System.out.println(response);
-        return response;
+        return restTemplate.getForEntity(serverUrl + "/myWallet", WalletResponseDTO.class);
     }
 }

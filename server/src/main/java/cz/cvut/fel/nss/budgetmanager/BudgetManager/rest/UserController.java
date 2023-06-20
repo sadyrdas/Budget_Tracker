@@ -7,13 +7,9 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.security.AuthToken
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.rest.util.RestUtil;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.model.AuthenticationRequest;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.model.AuthenticationResponse;
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.service.TokenValidatorService;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,12 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * REST controller for managing user-related operations.
- * @param userService The UserService to be used.
  */
 @AllArgsConstructor
 @RestController
@@ -61,7 +54,7 @@ public class UserController {
     /**
      * Retrieves a user by email.
      *
-     * @param userEmail The email of the user to retrieve.
+     * @param id The id of the user to retrieve.
      * @return The User object with the specified email.
      * @throws NotFoundException if a user with the specified email is not found.
      */

@@ -1,34 +1,39 @@
 package cz.cvut.fel.nss.budgetmanager.Dispatcher.rest;
 
-import cz.cvut.fel.nss.budgetmanager.Dispatcher.dto.UserDTO;
 import cz.cvut.fel.nss.budgetmanager.Dispatcher.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("rest/categories")
 public class CategoryController {
 
+    private final RestTemplate restTemplate;
+    private final String serverUrl;
+
     @Autowired
-    private RestTemplate restTemplate;
-    private final String server2Url = "http://localhost:8081/rest/categories";
+    public CategoryController(RestTemplate restTemplate, @Value("${server2.url}") String serverUrl) {
+        this.restTemplate = restTemplate;
+        this.serverUrl = serverUrl;
+    }
 
     @PostMapping
     public ResponseEntity<Category> createCategory(@RequestBody Category category) {
         HttpEntity<Category> request = new HttpEntity<>(category);
-        return restTemplate.exchange(server2Url, HttpMethod.POST, request, Category.class);
+        return restTemplate.exchange(serverUrl, HttpMethod.POST, request, Category.class);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory) {
-        String url = server2Url + "/{id}";
+        String url = serverUrl + "/{id}";
         HttpEntity<Category> requestEntity = new HttpEntity<>(updatedCategory);
 
         return restTemplate.exchange(url,
@@ -40,7 +45,7 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        String url = server2Url + "/{id}";
+        String url = serverUrl + "/{id}";
         return restTemplate.exchange(url,
                 HttpMethod.DELETE,
                 null,
@@ -50,7 +55,7 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategory(@PathVariable Long id) {
-        String url = server2Url +"/{id}";
+        String url = serverUrl +"/{id}";
         ResponseEntity<Category> response = restTemplate.getForEntity(url,
                 Category.class,
                 id);
@@ -61,10 +66,11 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
         return restTemplate.exchange(
-                server2Url,
+                serverUrl,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<Category>>(){});
+                new ParameterizedTypeReference<>() {
+                });
     }
 }
 
