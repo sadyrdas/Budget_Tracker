@@ -135,10 +135,12 @@ public class WalletService {
                 if (wallet.getCurrency() == Currency.EUR) {
                     BigDecimal multipliedEURtoCZK = new BigDecimal("22");
                     wallet.setAmount(wallet.getAmount().multiply(multipliedEURtoCZK));
+                    wallet.setBudgetLimit(wallet.getBudgetLimit().multiply(multipliedEURtoCZK));
                 }
                 if (wallet.getCurrency() == Currency.USD) {
                     BigDecimal multipliedUSDtoCZK = new BigDecimal("22.05");
                     wallet.setAmount(wallet.getAmount().multiply(multipliedUSDtoCZK));
+                    wallet.setBudgetLimit(wallet.getBudgetLimit().multiply(multipliedUSDtoCZK));
 
                 }
                 wallet.setCurrency(Currency.CZK);
@@ -148,10 +150,12 @@ public class WalletService {
                 if (wallet.getCurrency() == Currency.CZK) {
                     BigDecimal multipliedCZKtoEur = new BigDecimal("0.042");
                     wallet.setAmount(wallet.getAmount().multiply(multipliedCZKtoEur));
+                    wallet.setBudgetLimit(wallet.getAmount().multiply(multipliedCZKtoEur));
                 }
                 if (wallet.getCurrency() == Currency.USD) {
                     BigDecimal multipliedUSDtoEUR = new BigDecimal("0.93");
                     wallet.setAmount(wallet.getAmount().multiply(multipliedUSDtoEUR));
+                    wallet.setBudgetLimit(wallet.getBudgetLimit().multiply(multipliedUSDtoEUR));
                 }
                 wallet.setCurrency(Currency.EUR);
                 walletDao.update(wallet);
@@ -160,14 +164,18 @@ public class WalletService {
                 if (wallet.getCurrency() == Currency.EUR) {
                     BigDecimal multipliedEURtoUSD = new BigDecimal("1.07");
                     wallet.setAmount(wallet.getAmount().multiply(multipliedEURtoUSD));
+                    wallet.setBudgetLimit(wallet.getBudgetLimit().multiply(multipliedEURtoUSD));
                 }
                 if (wallet.getCurrency() == Currency.CZK){
                     BigDecimal multipliedCZKToUSD = new BigDecimal("0.045");
                     wallet.setAmount(wallet.getAmount().multiply(multipliedCZKToUSD));
+                    wallet.setBudgetLimit(wallet.getBudgetLimit().multiply(multipliedCZKToUSD));
                 }
                 wallet.setCurrency(Currency.USD);
                 walletDao.update(wallet);
             }
         }
     }
+
+
 }
