@@ -3,6 +3,7 @@ package cz.cvut.fel.nss.budgetmanager.BudgetManager.service;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.UserDao;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.security.AuthTokenDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,12 @@ import java.util.Objects;
  * Service class for managing user-related operations.
  */
 @Service
+@Transactional
 public class UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
     private final WalletService walletService;
+    private final AuthTokenDao authTokenRepository;
 
     /**
      * Constructs a new UserService with the given dependencies.
@@ -27,10 +30,11 @@ public class UserService {
      * @param walletService   The WalletService for managing user wallets.
      */
     @Autowired
-    public UserService(UserDao userDao, PasswordEncoder passwordEncoder, WalletService walletService) {
+    public UserService(UserDao userDao, PasswordEncoder passwordEncoder, WalletService walletService, AuthTokenDao authTokenRepository) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
         this.walletService = walletService;
+        this.authTokenRepository = authTokenRepository;
     }
 
     /**
@@ -41,18 +45,17 @@ public class UserService {
      * @param password The password of the user.
      * @return True if the user is created successfully, false otherwise.
      */
-    @Transactional
-    public Boolean createUser(String email, String username, String password){
+    public Boolean createUser(String email, String username, String password) {
         Objects.requireNonNull(email);
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
         User exist = userDao.findByEmail(email);
 
         boolean result = false;
-        if (exist != null && (email.isEmpty() ||  username.isEmpty() || password.isEmpty())) {
+        if (exist != null && (email.isEmpty() || username.isEmpty() || password.isEmpty())) {
             return result;
         } else {
-            User user  = new User(email, username, password, null);
+            User user = new User(email, password, username, null);
             user.encodePassword(passwordEncoder);
             Wallet wallet = walletService.createWallet(username, user);
             user.setWallet(wallet);
@@ -61,7 +64,10 @@ public class UserService {
             result = true;
         }
         return result;
+    }
 
+    public User findUser(Long id) {
+        return userDao.find(id);
     }
 
     /**
@@ -70,9 +76,7 @@ public class UserService {
      * @param userEmail The email of the user.
      * @return The User object if found, null otherwise.
      */
-    @Transactional //readonly ??
-    public User findUserByEmail(String userEmail) {
-        return userDao.findByEmail(userEmail);
+    public User findUserByEmail(String email) {
+        return userDao.findByEmail(email);
     }
-
 }

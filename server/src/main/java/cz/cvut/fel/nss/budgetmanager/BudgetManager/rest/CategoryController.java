@@ -49,6 +49,7 @@ public class CategoryController {
      * @throws NotFoundException if the category with the specified ID is not found.
      */
     @PutMapping("/{id}")
+//    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory) {
         Category category = categoryService.getCategory(id);
 
@@ -67,6 +68,7 @@ public class CategoryController {
      * @return The ResponseEntity with no content and the appropriate status.
      */
     @DeleteMapping("/{id}")
+//    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
@@ -89,13 +91,13 @@ public class CategoryController {
         }
     }
 
-
     /**
      * Retrieves all categories.
      *
      * @return The ResponseEntity containing the list of all categories and the appropriate status.
      */
-    @GetMapping ResponseEntity<List<Category>> getAllCategories() {
+    @GetMapping
+    public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
         if (categories.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -103,4 +105,5 @@ public class CategoryController {
             return new ResponseEntity<>(categories, HttpStatus.OK);
         }
     }
+
 }

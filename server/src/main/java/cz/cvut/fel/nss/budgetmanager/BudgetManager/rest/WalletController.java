@@ -5,8 +5,7 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.dto.WalletResponseDTO;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.exceptions.NotFoundException;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Currency;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.SecurityUtils;
-import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.UserService;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.util.SecurityUtils;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.WalletService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +24,15 @@ import java.util.Map;
 @RequestMapping("rest/wallet")
 public class WalletController {
     private final WalletService walletService;
-    private final UserService userService;
 
     /**
      * Constructs a new WalletController with the provided WalletService and UserService.
      *
      * @param walletService The WalletService to be used.
-     * @param userService  The UserService to be used.
      */
     @Autowired
-    public WalletController(WalletService walletService, UserService userService) {
+    public WalletController(WalletService walletService) {
         this.walletService = walletService;
-        this.userService = userService;
     }
 
     /**
@@ -45,7 +41,7 @@ public class WalletController {
      * @param updatedWallet The updated wallet object.
      * @return The ResponseEntity containing the updated WalletResponseDTO object and the appropriate status.
      */
-    @PutMapping(value = "/wallet",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "walletModification", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WalletResponseDTO> updateWallet(@RequestBody Wallet updatedWallet){
         Wallet wallet = SecurityUtils.getCurrentUser().getWallet();
 
@@ -65,8 +61,8 @@ public class WalletController {
      * @param amount The amount of money to add.
      * @return The ResponseEntity with no content and the appropriate status.
      */
-    @PutMapping(value = "/addMoney")
-    public ResponseEntity<Void> addMoneyToWallet(@RequestParam("amount") BigDecimal amount) {
+    @PutMapping(value = "/money")
+    public ResponseEntity<Void> addMoneyToWallet(@RequestBody BigDecimal amount) {
         Wallet userWallet = SecurityUtils.getCurrentUser().getWallet();
         walletService.addMoney(userWallet, amount);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -79,7 +75,7 @@ public class WalletController {
      * @return The ResponseEntity containing the updated WalletGoalResponseDTO object and the appropriate status.
      * @throws NotFoundException if the goal is null.
      */
-    @PostMapping(value = "/addGoal", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/goal", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<WalletGoalResponseDTO> addGoal(@RequestBody WalletGoalResponseDTO request) {
         Wallet wallet = SecurityUtils.getCurrentUser().getWallet();

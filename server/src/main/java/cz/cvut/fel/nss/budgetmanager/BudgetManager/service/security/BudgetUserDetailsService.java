@@ -18,7 +18,6 @@ public class BudgetUserDetailsService implements org.springframework.security.co
 
     private final UserDao userDao;
 
-
     /**
      * Constructs a new BudgetUserDetailsService with the provided UserDao.
      *

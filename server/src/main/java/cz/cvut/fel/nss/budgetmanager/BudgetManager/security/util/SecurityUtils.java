@@ -1,4 +1,4 @@
-package cz.cvut.fel.nss.budgetmanager.BudgetManager.security;
+package cz.cvut.fel.nss.budgetmanager.BudgetManager.security.util;
 
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.User;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.model.AuthenticationToken;
@@ -48,7 +48,7 @@ public class SecurityUtils {
     public static AuthenticationToken setCurrentUser(BudgetUserDetails budgetUserDetails) {
         final AuthenticationToken token = new AuthenticationToken(budgetUserDetails.getAuthorities(), budgetUserDetails);
         token.setAuthenticated(true);
-
+        System.out.println(token.getPrincipal());
         final SecurityContext context = new SecurityContextImpl();
         context.setAuthentication(token);
         SecurityContextHolder.setContext(context);

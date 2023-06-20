@@ -1,8 +1,11 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.security;
 
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.service.AuthenticationService;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.model.AuthenticationToken;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.model.BudgetUserDetails;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.util.SecurityUtils;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.security.BudgetUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,27 +15,21 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
 /**
  * Custom implementation of the AuthenticationProvider interface.
  * Provides authentication functionality by verifying the provided credentials against the user details.
+ * @param budgetUserDetailsService The BudgetUserDetailsService to be used for user details retrieval.
+ * @param passwordEncoder          The PasswordEncoder to be used for password encoding and verification.
  */
+
 @Service
+@RequiredArgsConstructor
 public class DefaultAuthenticationProvider implements AuthenticationProvider {
+
     private final BudgetUserDetailsService budgetUserDetailsService;
     private final PasswordEncoder passwordEncoder;
-
-    /**
-     * Constructs a new DefaultAuthenticationProvider with the provided BudgetUserDetailsService and PasswordEncoder.
-     *
-     * @param budgetUserDetailsService The BudgetUserDetailsService to be used for user details retrieval.
-     * @param passwordEncoder          The PasswordEncoder to be used for password encoding and verification.
-     */
-    @Autowired
-    public DefaultAuthenticationProvider(BudgetUserDetailsService budgetUserDetailsService,
-                                         PasswordEncoder passwordEncoder) {
-        this.budgetUserDetailsService = budgetUserDetailsService;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final AuthenticationService authenticationService;
 
     /**
      * Authenticates the provided authentication object by verifying the credentials against the user details.
@@ -50,6 +47,8 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
         if (!passwordEncoder.matches(password, budgetUserDetails.getPassword())) {
             throw new BadCredentialsException("Provided credentials do not matches!");
         }
+
+        authenticationService.authenticate(email);
         return SecurityUtils.setCurrentUser(budgetUserDetails);
     }
 
