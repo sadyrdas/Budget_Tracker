@@ -75,10 +75,12 @@ public class TransactionController {
                 .category(category)
                 .transDate()
                 .wallet(wallet)
-                .money(transaction.getMoney())
+                .money(transaction.getMoney(), transaction.getTypeTransaction())
                 .name(transaction.getDescription());
         transactionService.persist(builder.build());
         TransactionResponseDTO transactionResponseDTO = modelMapper.map(builder.build(), TransactionResponseDTO.class);
+        wallet.addTransaction(transaction);
+        walletService.checkBudgetLimit(wallet.getWalletId());
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponseDTO);
     }
 
