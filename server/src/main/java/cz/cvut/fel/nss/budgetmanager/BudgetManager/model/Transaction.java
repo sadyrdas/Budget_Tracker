@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hazelcast.internal.serialization.SerializableByConvention;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.exceptions.NotFoundException;
 import jakarta.persistence.*;
+import org.springframework.data.elasticsearch.annotations.Document;
+
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 @NamedQueries({
         @NamedQuery(name = "findByName", query = "SELECT t FROM Transaction t where t.description = :name ")
 })
+@Document(indexName = "trans")
 public class Transaction implements Serializable {
 
     @Serial
