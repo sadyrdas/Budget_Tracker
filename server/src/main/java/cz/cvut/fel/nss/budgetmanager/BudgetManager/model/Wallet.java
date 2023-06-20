@@ -3,6 +3,8 @@ package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,11 @@ import java.util.Objects;
 @NamedQueries({
         @NamedQuery(name = "findByClientEmail", query = "SELECT w FROM Wallet w WHERE w.client.email =:email")
 })
-public class Wallet{
+public class Wallet implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 3L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "wallet_id")

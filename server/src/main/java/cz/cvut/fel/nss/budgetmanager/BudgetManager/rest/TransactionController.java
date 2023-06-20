@@ -5,6 +5,9 @@ import cz.cvut.fel.nss.budgetmanager.BudgetManager.exceptions.NotFoundException;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Category;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Transaction;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.model.Wallet;
+//import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionRepository;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.repository.TransactionRepository;
+import cz.cvut.fel.nss.budgetmanager.BudgetManager.security.SecurityUtils;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.CategoryService;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.TransactionService;
 import cz.cvut.fel.nss.budgetmanager.BudgetManager.service.WalletService;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.Resource;
 
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,12 +33,15 @@ public class TransactionController {
     private final TransactionService transactionService;
     private final WalletService walletService;
     private final CategoryService categoryService;
+    private final TransactionRepository transactionRepository;
 
     @Autowired
-    public TransactionController(TransactionService transactionService, WalletService walletService, CategoryService categoryService){
+    public TransactionController(TransactionService transactionService, WalletService walletService,
+                                 CategoryService categoryService, TransactionRepository transactionRepository){
         this.transactionService = transactionService;
         this.walletService = walletService;
         this.categoryService = categoryService;
+        this.transactionRepository = transactionRepository;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,7 +52,6 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<TransactionResponseDTO> getTransactionById(@PathVariable Long id) {
         Transaction transaction = transactionService.findTransactionById(id);
         if (transaction == null) {
@@ -58,9 +64,9 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.OK).body(transactionResponseDTO);
     }
 
-    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TransactionResponseDTO> createTransaction(@PathVariable Long id,  @RequestBody Transaction transaction) {
-        Wallet wallet = walletService.getWalletById(id);
+    @PostMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TransactionResponseDTO> createTransaction(@RequestBody Transaction transaction) {
+        Wallet wallet = SecurityUtils.getCurrentUser().getWallet();
         Category category = categoryService.getCategoryByName(transaction.getCategory().getName());
         ModelMapper modelMapper = new ModelMapper();
         Transaction.Builder builder = new Transaction.Builder();
@@ -77,7 +83,6 @@ public class TransactionController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<TransactionResponseDTO> updateTransaction(@PathVariable Long id, @RequestBody Transaction updatedTransaction) {
         Transaction transaction = transactionService.findTransactionById(id);
         if (transaction == null) {
@@ -89,14 +94,13 @@ public class TransactionController {
         transaction.setTypeTransaction(updatedTransaction.getTypeTransaction());
         transaction.setDate(updatedTransaction.getDate());
 
-        transactionService.update(transaction);
         ModelMapper modelMapper = new ModelMapper();
-        TransactionResponseDTO transactionResponseDTO = modelMapper.map(transaction, TransactionResponseDTO.class);
+        TransactionResponseDTO transactionResponseDTO = modelMapper.map(transactionService.update(transaction),
+                TransactionResponseDTO.class);
         return ResponseEntity.ok(transactionResponseDTO);
     }
 
     @DeleteMapping("/{id}")
-    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         Transaction transaction = transactionService.findTransactionById(id);
         if (transaction == null) {
@@ -118,11 +122,21 @@ public class TransactionController {
 
     @GetMapping("/export")
     public ResponseEntity<Resource> exportTransaction() {
-        Resource fileResource = transactionService.exportTransactions();
+        try {
+            Resource fileResource = transactionService.exportTransactionsToTxtFile();
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"transactions.csv\"")
-                .contentType(MediaType.parseMediaType("text/csv"))
-                .body(fileResource);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"transactions.txt\"")
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body(fileResource);
+        } catch (IOException e) {
+            // Handle the exception accordingly
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
+//    @GetMapping(value = "/findByDescription/{description}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public List<Transaction> findByDescription(@PathVariable String description) {
+//        return transactionRepository.findTransactionByDescription(description);
+//    }
 }

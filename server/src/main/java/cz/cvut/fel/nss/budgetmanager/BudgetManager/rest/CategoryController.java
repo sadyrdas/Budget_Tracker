@@ -27,7 +27,6 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory) {
         Category category = categoryService.getCategory(id);
 
@@ -36,19 +35,12 @@ public class CategoryController {
         }
 
         category.setName(updatedCategory.getName());
-        categoryService.updateCategory(category);
-        return ResponseEntity.ok(category);
+        return ResponseEntity.ok(categoryService.updateCategory(category));
     }
 
     @DeleteMapping("/{id}")
-    @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        Category category = categoryService.getCategory(id);
-        if (category == null) {
-            throw new NotFoundException("Category with id: " + id + " was not found");
-        }
-        categoryService.deleteCategory(category);
-
+        categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }
 
