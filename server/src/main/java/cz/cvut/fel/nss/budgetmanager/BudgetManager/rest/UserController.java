@@ -68,7 +68,7 @@ public class UserController {
         return u;
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping(value = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
 
         User user = userService.findUserByEmail(request.getEmail());
