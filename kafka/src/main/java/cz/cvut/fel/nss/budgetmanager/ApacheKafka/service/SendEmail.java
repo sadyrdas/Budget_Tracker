@@ -17,7 +17,7 @@ public class SendEmail {
     /**
      * The domain name for the Mailgun API.
      */
-    private static final String DOMAIN_NAME = "sandboxa3c51e1c019a45d9bef1ae7667ad9a2a.mailgun.org";
+    private static final String DOMAIN_NAME = "sandboxa5cfe50ef0d94c56a44688512e1b2b4e.mailgun.org";
 
     /**
      * Sends an email notification using the Mailgun API.

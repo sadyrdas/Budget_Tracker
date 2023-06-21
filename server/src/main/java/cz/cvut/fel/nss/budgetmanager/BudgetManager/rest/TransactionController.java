@@ -106,6 +106,7 @@ public class TransactionController {
         transactionService.persist(builder.build());
         TransactionResponseDTO transactionResponseDTO = modelMapper.map(builder.build(), TransactionResponseDTO.class);
         wallet.addTransaction(transaction);
+        walletService.updateWallet(wallet);
         walletService.checkBudgetLimit(wallet.getWalletId());
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponseDTO);
     }
