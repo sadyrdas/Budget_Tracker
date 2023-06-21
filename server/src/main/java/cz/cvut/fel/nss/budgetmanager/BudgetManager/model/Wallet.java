@@ -2,6 +2,7 @@ package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -11,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Represents a wallet entity in the system.
+ */
 @Entity
 @Table(name = "wallet")
 @NamedQueries({
@@ -51,8 +55,8 @@ public class Wallet implements Serializable {
     @CollectionTable(name = "goals", joinColumns = @JoinColumn(name = "wallet_id"))
     private Map<String, BigDecimal> budgetGoal;
 
-    @Transient
-    @OneToMany(mappedBy = "wallet")
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "wallet")
     private List<Transaction> transactions;
 
     public Wallet() {
@@ -60,10 +64,6 @@ public class Wallet implements Serializable {
 
     public Long getWalletId() {
         return walletId;
-    }
-
-    public void setWalletId(Long walletId) {
-        this.walletId = walletId;
     }
 
     public BigDecimal getAmount() {
@@ -118,10 +118,6 @@ public class Wallet implements Serializable {
         return transactions;
     }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
-
     public void addTransaction(Transaction transaction){
         Objects.requireNonNull(transaction);
         if (transactions == null) transactions = new ArrayList<>();
@@ -132,7 +128,7 @@ public class Wallet implements Serializable {
         return budgetGoal;
     }
 
-    public void setBudgetGoal(Map<String, BigDecimal> budgetGoal) {
-        this.budgetGoal = budgetGoal;
+    public void setBudgetGoal(String key, BigDecimal money) {
+        this.budgetGoal.put(key, money);
     }
 }

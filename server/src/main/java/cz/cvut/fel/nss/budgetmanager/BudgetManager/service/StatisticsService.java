@@ -20,10 +20,21 @@ public class StatisticsService {
 
     private final TransactionDao transactionDao;
 
+    /**
+     * Constructs a new StatisticsService with the provided TransactionDao.
+     *
+     * @param transactionDao The TransactionDao implementation used for data access.
+     */
     public StatisticsService(TransactionDao transactionDao) {
         this.transactionDao = transactionDao;
     }
 
+    /**
+     * Generates statistics based on the specified interval type.
+     *
+     * @param intervalType The interval type for which to generate statistics.
+     * @return A map containing the generated statistics.
+     */
     public Map<String, BigDecimal> generateStatistics(TypeInterval intervalType) {
         LocalDateTime startDate = calculateStartDate(intervalType);
         LocalDateTime endDate = LocalDateTime.now();
@@ -43,6 +54,12 @@ public class StatisticsService {
         return statistics;
     }
 
+    /**
+     * Calculates the start date for the specified interval type.
+     *
+     * @param intervalType The interval type.
+     * @return The start date for the interval.
+     */
     private LocalDateTime calculateStartDate(TypeInterval intervalType) {
         LocalDateTime startDate;
 
@@ -65,6 +82,13 @@ public class StatisticsService {
         return startDate;
     }
 
+    /**
+     * Calculates the total amount for transactions of the specified transaction type.
+     *
+     * @param transactions     The list of transactions.
+     * @param transactionType  The transaction type.
+     * @return The total amount for transactions of the specified type.
+     */
     private BigDecimal calculateTotalAmount(List<Transaction> transactions, TypeTransaction transactionType) {
         BigDecimal totalAmount = BigDecimal.ZERO;
 

@@ -5,13 +5,14 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-
+/**
+ * Represents a category entity in the system.
+ */
 @Entity
 @Table(name = "category")
-@NamedQueries({
-        @NamedQuery(name = "findCategoryByName", query = "SELECT c FROM Category c WHERE c.name = :name "),
-        @NamedQuery(name = "updateCategoryByName", query = "UPDATE Category c set c.name =: name where c.name=: name")
-})
+@NamedQueries({@NamedQuery(name = "findCategoryByName",
+        query = "SELECT c FROM Category c WHERE c.name = :name "),
+        @NamedQuery(name = "updateCategoryByName", query = "UPDATE Category c set c.name =: name where c.name=: name")})
 public class Category implements Serializable {
 
     @Serial
@@ -28,10 +29,6 @@ public class Category implements Serializable {
 
     public Long getCategoryId() {
         return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
     }
 
     public String getName() {

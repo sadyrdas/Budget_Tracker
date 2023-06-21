@@ -1,5 +1,8 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
+/**
+ * Represents the type of transaction (income or expense).
+ */
 public enum TypeTransaction {
     INCOME("INCOME"),
     EXPENSE("EXPENSE");
