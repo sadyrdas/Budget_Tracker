@@ -16,12 +16,24 @@ public class UserController {
     private final RestTemplate restTemplate;
     private final String serverUrl;
 
+    /**
+     * Creates a UserController with a RestTemplate and server URL.
+     *
+     * @param restTemplate The RestTemplate for making HTTP requests.
+     * @param serverUrl     The URL of the server.
+     */
     @Autowired
     public UserController(RestTemplate restTemplate, @Value("${server1.url}") String serverUrl) {
         this.restTemplate = restTemplate;
         this.serverUrl = serverUrl;
     }
 
+    /**
+     * Registers a new user.
+     *
+     * @param userDTO The UserDTO object containing user details.
+     * @return The ResponseEntity.
+     */
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> register(@RequestBody UserDTO userDTO) {
         HttpHeaders headers = new HttpHeaders();
@@ -32,12 +44,24 @@ public class UserController {
         return response;
     }
 
+    /**
+     * Retrieves a user by ID.
+     *
+     * @param id The ID of the user.
+     * @return The User object.
+     */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public User getUser(@PathVariable Long id) {
         ResponseEntity<User> response = restTemplate.getForEntity(serverUrl + "/" + id, User.class);
         return response.getBody();
     }
 
+    /**
+     * Authenticates a user.
+     *
+     * @param request The AuthenticationRequest object containing user credentials.
+     * @return The ResponseEntity containing the AuthenticationResponse.
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         HttpEntity<AuthenticationRequest> req = new HttpEntity<>(request);

@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 /**
  * Custom implementation of the AuthenticationProvider interface.
  * Provides authentication functionality by verifying the provided credentials against the user details.
- * @param budgetUserDetailsService The BudgetUserDetailsService to be used for user details retrieval.
- * @param passwordEncoder          The PasswordEncoder to be used for password encoding and verification.
  */
 
 @Service

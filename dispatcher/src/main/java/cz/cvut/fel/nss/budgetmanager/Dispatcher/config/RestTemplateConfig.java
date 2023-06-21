@@ -24,6 +24,11 @@ public class RestTemplateConfig {
     @Value("${spring.security.user.password}")
     private String password;
 
+    /**
+     * Creates a RestTemplate bean with basic authentication.
+     *
+     * @return The configured RestTemplate.
+     */
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
@@ -39,16 +44,34 @@ public class RestTemplateConfig {
         return restTemplate;
     }
 
+    /**
+     * Custom request interceptor for adding basic authentication headers to the request.
+     */
     public static class BasicAuthorizationInterceptor implements ClientHttpRequestInterceptor {
 
         private final String username;
         private final String password;
 
+        /**
+         * Constructs the BasicAuthorizationInterceptor with the given username and password.
+         *
+         * @param username The username for basic authentication.
+         * @param password The password for basic authentication.
+         */
         public BasicAuthorizationInterceptor(String username, String password) {
             this.username = username;
             this.password = password;
         }
 
+        /**
+         * Intercepts the request and adds the basic authentication headers.
+         *
+         * @param request   The request to be intercepted.
+         * @param body      The request body.
+         * @param execution The execution of the request.
+         * @return The response of the executed request.
+         * @throws IOException if an I/O error occurs.
+         */
         @Override
         public ClientHttpResponse intercept(
                 HttpRequest request, byte[] body, ClientHttpRequestExecution execution)

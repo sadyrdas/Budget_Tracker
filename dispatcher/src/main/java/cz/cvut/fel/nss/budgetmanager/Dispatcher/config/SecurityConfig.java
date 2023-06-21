@@ -17,11 +17,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * Creates a BCryptPasswordEncoder bean for password encoding.
+     *
+     * @return The BCryptPasswordEncoder bean.
+     */
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Creates a UserDetailsService bean with an admin user.
+     *
+     * @return The UserDetailsService bean.
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails admin = User.builder()
@@ -32,6 +42,13 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(admin);
     }
 
+    /**
+     * Configures the security filter chain.
+     *
+     * @param http The HttpSecurity object to configure.
+     * @return The configured SecurityFilterChain.
+     * @throws Exception if an exception occurs during configuration.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

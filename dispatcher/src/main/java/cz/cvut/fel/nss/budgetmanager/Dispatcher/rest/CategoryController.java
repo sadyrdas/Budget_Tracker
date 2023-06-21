@@ -19,18 +19,37 @@ public class CategoryController {
     private final RestTemplate restTemplate;
     private final String serverUrl;
 
+    /**
+     * Creates a CategoryController with a RestTemplate and server URL.
+     *
+     * @param restTemplate The RestTemplate for making HTTP requests.
+     * @param serverUrl     The URL of the server.
+     */
     @Autowired
     public CategoryController(RestTemplate restTemplate, @Value("${server2.url}") String serverUrl) {
         this.restTemplate = restTemplate;
         this.serverUrl = serverUrl;
     }
 
+    /**
+     * Creates a new category.
+     *
+     * @param category The Category object to create.
+     * @return The ResponseEntity with the created Category.
+     */
     @PostMapping
     public ResponseEntity<Category> createCategory(@RequestBody Category category) {
         HttpEntity<Category> request = new HttpEntity<>(category);
         return restTemplate.exchange(serverUrl, HttpMethod.POST, request, Category.class);
     }
 
+    /**
+     * Updates an existing category.
+     *
+     * @param id             The ID of the category to update.
+     * @param updatedCategory The updated Category object.
+     * @return The ResponseEntity with the updated Category.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory) {
         String url = serverUrl + "/{id}";
@@ -43,6 +62,12 @@ public class CategoryController {
                 id);
     }
 
+    /**
+     * Deletes a category.
+     *
+     * @param id The ID of the category to delete.
+     * @return The ResponseEntity.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         String url = serverUrl + "/{id}";
@@ -53,6 +78,12 @@ public class CategoryController {
                 id);
     }
 
+    /**
+     * Retrieves a category by ID.
+     *
+     * @param id The ID of the category to retrieve.
+     * @return The ResponseEntity with the retrieved Category.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategory(@PathVariable Long id) {
         String url = serverUrl +"/{id}";
@@ -63,6 +94,11 @@ public class CategoryController {
         return response;
     }
 
+    /**
+     * Retrieves all categories.
+     *
+     * @return The ResponseEntity with the list of all categories.
+     */
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
         return restTemplate.exchange(

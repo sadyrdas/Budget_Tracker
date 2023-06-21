@@ -18,30 +18,59 @@ public class WalletController {
     private final RestTemplate restTemplate;
     private final String serverUrl;
 
+    /**
+     * Creates a WalletController with a RestTemplate and server URL.
+     *
+     * @param restTemplate The RestTemplate for making HTTP requests.
+     * @param serverUrl     The URL of the server.
+     */
     @Autowired
     public WalletController(RestTemplate restTemplate, @Value("${server1.url}") String serverUrl) {
         this.restTemplate = restTemplate;
         this.serverUrl = serverUrl;
     }
 
+    /**
+     * Adds money to the wallet.
+     *
+     * @param amount The amount of money to add.
+     * @return The ResponseEntity.
+     */
     @PutMapping(value = "/money", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> addMoneyToWallet(@RequestBody BigDecimal amount){
         HttpEntity<BigDecimal> request = new HttpEntity<>(amount);
         return restTemplate.exchange(serverUrl + "/money",HttpMethod.PUT, request, Void.class);
     }
 
+    /**
+     * Adds a goal to the wallet.
+     *
+     * @param walletGoalResponseDTO The WalletGoalResponseDTO containing the goal details.
+     * @return The ResponseEntity with the WalletGoalResponseDTO.
+     */
     @PostMapping(value = "/goal", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WalletGoalResponseDTO> addGoal(@RequestBody WalletGoalResponseDTO walletGoalResponseDTO) {
         HttpEntity<WalletGoalResponseDTO> request = new HttpEntity<>(walletGoalResponseDTO);
         return restTemplate.exchange(serverUrl + "/goal", HttpMethod.POST, request, WalletGoalResponseDTO.class);
     }
 
+    /**
+     * Changes the currency of the wallet.
+     *
+     * @param currency The new currency.
+     * @return The ResponseEntity.
+     */
     @PutMapping(value = "/currency")
     public ResponseEntity<Void> changeCurrency(@RequestParam("currency") Currency currency){
         HttpEntity<Currency> request = new HttpEntity<>(currency);
         return restTemplate.exchange(serverUrl + "/currency?currency={currency}", HttpMethod.PUT, request, Void.class, currency);
     }
 
+    /**
+     * Retrieves the wallet.
+     *
+     * @return The ResponseEntity with the WalletResponseDTO.
+     */
     @GetMapping(value = "/myWallet")
     public ResponseEntity<WalletResponseDTO> getWallet(){
         return restTemplate.getForEntity(serverUrl + "/myWallet", WalletResponseDTO.class);

@@ -13,6 +13,15 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
 
+    /**
+     * Pre-handle method of the interceptor.
+     *
+     * @param request  The HttpServletRequest object.
+     * @param response The HttpServletResponse object.
+     * @param handler  The handler object.
+     * @return true if the request is allowed to proceed, false otherwise.
+     * @throws Exception if an exception occurs.
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // Log the HTTP method and URI
@@ -27,11 +36,29 @@ public class LoggingInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    /**
+     * Post-handle method of the interceptor.
+     *
+     * @param request        The HttpServletRequest object.
+     * @param response       The HttpServletResponse object.
+     * @param handler        The handler object.
+     * @param modelAndView The ModelAndView object.
+     * @throws Exception if an exception occurs.
+     */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         logger.info("Request URL::" + request.getRequestURL().toString() + " Sent to Handler :: Current Time=" + System.currentTimeMillis());
     }
 
+    /**
+     * After-completion method of the interceptor.
+     *
+     * @param request  The HttpServletRequest object.
+     * @param response The HttpServletResponse object.
+     * @param handler  The handler object.
+     * @param ex       The exception object.
+     * @throws Exception if an exception occurs.
+     */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         long startTime = (Long) request.getAttribute("startTime");

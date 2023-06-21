@@ -11,7 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class LogoutService implements LogoutHandler {
 
-
+    /**
+     * Performs the logout operation.
+     *
+     * @param request        The HttpServletRequest object.
+     * @param response       The HttpServletResponse object.
+     * @param authentication The Authentication object representing the authenticated user.
+     */
     @Override
     public void logout(
             HttpServletRequest request,

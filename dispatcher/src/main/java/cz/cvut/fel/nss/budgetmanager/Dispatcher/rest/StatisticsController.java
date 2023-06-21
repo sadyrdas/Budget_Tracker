@@ -19,12 +19,25 @@ public class StatisticsController {
     private final RestTemplate restTemplate;
     private final String serverUrl;
 
+    /**
+     * Creates a StatisticsController with a RestTemplate and server URL.
+     *
+     * @param restTemplate The RestTemplate for making HTTP requests.
+     * @param serverUrl     The URL of the server.
+     */
     @Autowired
     public StatisticsController(RestTemplate restTemplate, @Value("${server2.url}") String serverUrl) {
         this.restTemplate = restTemplate;
         this.serverUrl = serverUrl;
     }
 
+    /**
+     * Generates statistics based on the specified interval type.
+     *
+     * @param intervalType The TypeInterval specifying the interval type.
+     * @return The generated statistics as a Map.
+     * @throws RuntimeException if failed to generate statistics.
+     */
     @GetMapping("/generate")
     public Map generateStatistics(@RequestParam("intervalType") TypeInterval intervalType) {
         String url = serverUrl + "?intervalType=" + intervalType;
