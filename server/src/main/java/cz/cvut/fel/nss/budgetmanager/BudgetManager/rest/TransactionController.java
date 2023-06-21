@@ -59,7 +59,8 @@ public class TransactionController {
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TransactionResponseDTO> getAllTransactions() {
-        List<Transaction> list = transactionService.findAllTransactions();
+        Wallet wallet = SecurityUtils.getCurrentUser().getWallet();
+        List<Transaction> list = walletService.getTransactions(wallet.getWalletId());
         ModelMapper modelMapper = new ModelMapper();
         return list.stream().map(transaction -> modelMapper.map(transaction, TransactionResponseDTO.class)).toList();
     }
@@ -108,6 +109,7 @@ public class TransactionController {
         wallet.addTransaction(transaction);
         walletService.updateWallet(wallet);
         walletService.checkBudgetLimit(wallet.getWalletId());
+        walletService.updateWallet(wallet);
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponseDTO);
     }
 

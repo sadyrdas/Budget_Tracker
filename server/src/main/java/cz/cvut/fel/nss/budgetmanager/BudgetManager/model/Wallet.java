@@ -1,6 +1,8 @@
 package cz.cvut.fel.nss.budgetmanager.BudgetManager.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -53,7 +55,8 @@ public class Wallet implements Serializable {
     @CollectionTable(name = "goals", joinColumns = @JoinColumn(name = "wallet_id"))
     private Map<String, BigDecimal> budgetGoal;
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "wallet")
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "wallet")
     private List<Transaction> transactions;
 
     public Wallet() {

@@ -213,6 +213,7 @@ public class TransactionService {
      * @param wallet The wallet.
      * @return The total expenses for the wallet.
      */
+    @Transactional
     public BigDecimal calculateTotalExpenses(Wallet wallet) {
         List<Transaction> transactions = wallet.getTransactions();
         BigDecimal totalExpenses = BigDecimal.ZERO;
