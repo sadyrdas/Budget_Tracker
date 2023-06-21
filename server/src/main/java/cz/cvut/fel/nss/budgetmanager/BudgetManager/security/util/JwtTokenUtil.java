@@ -15,6 +15,12 @@ public class JwtTokenUtil {
     private static final String SECRET_KEY = "your_secret_key_here";
     private static final long JWT_EXPIRATION_MS = 86400000; // 24 hours
 
+    /**
+     * Generates a JWT token for the given user details.
+     *
+     * @param userDetails The UserDetails object representing the authenticated user.
+     * @return The generated JWT token.
+     */
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", userDetails.getUsername());
@@ -28,6 +34,12 @@ public class JwtTokenUtil {
                 .compact();
     }
 
+    /**
+     * Extracts the claims from a JWT token.
+     *
+     * @param token The JWT token.
+     * @return The extracted claims.
+     */
     public Claims extractClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
@@ -35,11 +47,24 @@ public class JwtTokenUtil {
                 .getBody();
     }
 
+    /**
+     * Validates a JWT token.
+     *
+     * @param token        The JWT token to validate.
+     * @param userDetails The UserDetails object representing the authenticated user.
+     * @return true if the token is valid, false otherwise.
+     */
     public boolean validateToken(String token, UserDetails userDetails) {
         String username = extractClaims(token).getSubject();
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
+    /**
+     * Checks if a JWT token is expired.
+     *
+     * @param token The JWT token.
+     * @return true if the token is expired, false otherwise.
+     */
     private boolean isTokenExpired(String token) {
         Date expirationDate = extractClaims(token).getExpiration();
         return expirationDate.before(new Date());

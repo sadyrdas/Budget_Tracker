@@ -29,6 +29,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private final BudgetUserDetailsService budgetUserDetailsService;
     private final AuthenticationService authenticationService;
 
+    /**
+     * Performs the authentication check for each incoming request.
+     *
+     * @param request     The HttpServletRequest object.
+     * @param response    The HttpServletResponse object.
+     * @param filterChain The FilterChain object.
+     * @throws ServletException if a servlet exception occurs.
+     * @throws IOException      if an I/O exception occurs.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

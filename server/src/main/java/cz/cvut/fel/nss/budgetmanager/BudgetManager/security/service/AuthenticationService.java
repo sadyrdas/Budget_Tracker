@@ -27,7 +27,13 @@ public class AuthenticationService {
         this.authTokenDao = authTokenDao;
     }
 
-
+    /**
+     * Authenticates a user by generating a token and inserting it into the database.
+     *
+     * @param email The email of the user to authenticate.
+     * @throws NotFoundException   if a user with the specified email is not found.
+     * @throws UserAlreadyExists if the user is already logged in.
+     */
     public void authenticate(String email) {
         User user = userDao.findByEmail(email);
         if (user == null) {
