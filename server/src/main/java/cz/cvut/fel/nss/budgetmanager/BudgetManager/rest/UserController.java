@@ -68,6 +68,12 @@ public class UserController {
         return u;
     }
 
+    /**
+     * Authenticates a user.
+     *
+     * @param request The AuthenticationRequest object containing user credentials.
+     * @return The ResponseEntity containing the AuthenticationResponse.
+     */
     @PostMapping(value = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
 
