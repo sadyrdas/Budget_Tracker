@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,14 +197,14 @@ public class WalletService {
      * @param money    The amount of money for the goal.
      * @param walletId The ID of the wallet.
      */
-    public void addGoal(String goal, BigDecimal money, Long walletId){
+    public void addGoal(String goal, BigDecimal money, Long walletId) {
         Wallet wallet = getWalletById(walletId);
-        Map<String, BigDecimal> currentBudgetGoals = wallet.getBudgetGoal();
-        if (!currentBudgetGoals.containsKey(goal)) {
-            currentBudgetGoals.put(goal, money);
-            wallet.setBudgetGoal(goal, money);
-        }
+        Goal newGoal = new Goal();
+        newGoal.setGoal(goal);
+        newGoal.setMoneyGoal(money);
+        wallet.addGoal(newGoal);
     }
+
 
     /**
      * Changes the currency of the specified wallet.
@@ -260,6 +259,4 @@ public class WalletService {
             }
         }
     }
-
-
 }
